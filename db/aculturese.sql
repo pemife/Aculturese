@@ -106,7 +106,7 @@ CREATE TABLE comentarios
 INSERT INTO etiquetas(nombre)
 VALUES ('Coches'),('Futbol'),('Motos'),('Airsoft'),('Ajedrez'),('Videojuegos'),
 ('Comics'),('Juegos de mesa'),('Manga'),('Anime'),('E-Sports'),
-('League of Legends'),('Patinaje'),('Programacián'),('Informática'),
+('League of Legends'),('Patinaje'),('Programación'),('Informática'),
 ('Interpretación');
 
 INSERT INTO usuarios (nombre, password, email)
@@ -121,4 +121,10 @@ VALUES ('Cine'),('Concierto'),('Festival'),('Cumpleaños'),('Viaje'),
 ('Comedia'),('Interpretación'),('Temático');
 
 INSERT INTO eventos (nombre, inicio, fin, lugar_id, categoria_id)
-VALUES ('Jornada de estudio', )
+VALUES ('Revision de proyecto', '2019-04-02 15:15:00', '2019-04-02 21:30:00', 1, 6);
+
+INSERT INTO comentarios(texto, usuario_id, evento_id)
+VALUES ('Estoy deseando ir!', 1, 1);
+
+INSERT INTO eventos_etiquetas(evento_id, etiqueta_id)
+VALUES (1,13),(1,14);

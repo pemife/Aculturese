@@ -7,10 +7,13 @@ $log = require __DIR__ . '/log.php';
 $config = [
     'id' => 'basic',
     'basePath' => dirname(__DIR__),
+    'name' => 'Acultúrese',
     'bootstrap' => ['log'],
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
         '@npm' => '@vendor/npm-asset',
+        '@uploads' => '@app/web/uploads',
+        '@uploadsUrl' => '/uploads',
     ],
     'language' => 'es-ES',
     'components' => [

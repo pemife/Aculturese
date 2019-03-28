@@ -14,6 +14,8 @@ use yii\web\IdentityInterface;
  * @property string $created_at
  * @property string $token
  * @property string $email
+ * @property string $biografia
+ * @property string $fechanac
  *
  * @property Comentarios[] $comentarios
  * @property UsuariosEtiquetas[] $usuariosEtiquetas
@@ -41,7 +43,8 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['nombre', 'password', 'email'], 'required'],
-            [['created_at'], 'safe'],
+            [['created_at', 'fechanac'], 'safe'],
+            [['bibliografia'], 'string'],
             [['nombre', 'token'], 'string', 'max' => 32],
             [['password'], 'string', 'max' => 60],
             [['password', 'password_repeat'], 'required', 'on' => [self::SCENARIO_CREATE]],
@@ -61,9 +64,11 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
             'id' => 'ID',
             'nombre' => 'Nombre',
             'password' => 'Password',
-            'created_at' => 'Created At',
+            'created_at' => 'Miembro desde',
             'token' => 'Token',
             'email' => 'Email',
+            'biografia' => 'Biografia',
+            'fechanac' => 'Fechanac',
         ];
     }
 

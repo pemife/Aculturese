@@ -14,9 +14,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <p>
-        <?= Html::a('Create Eventos', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <?php if( Yii::$app->user->id === 1 ){ ?>
+      <p>
+        <?= Html::a('Crear Evento', ['create'], ['class' => 'btn btn-success']) ?>
+      </p>
+    <?php } ?>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
@@ -24,16 +26,20 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
-            'nombre',
-            'inicio',
-            'fin',
-            'lugar_id',
-            //'categoria_id',
+          'nombre',
+          'inicio:DateTime',
+          'fin:DateTime',
+          [
+            'attribute' => 'lugar.nombre',
+            'label' => 'Donde',
+          ],
+          [
+            'attribute' => 'categoria.nombre',
+            'label' => 'Categoria',
+          ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+          ['class' => 'yii\grid\ActionColumn'],
         ],
     ]); ?>
 

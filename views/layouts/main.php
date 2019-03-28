@@ -42,7 +42,11 @@ AppAsset::register($this);
             ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
             ['label' => 'Calendarios (proximamente)', 'url' => ['/usuarios/calendario']],
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+              '<li>'
+              . Html::a('Login', ['site/login'])
+              . '</li><li>'
+              . Html::a('Registrar', ['usuarios/create'])
+              . '</li>'
             ) : (
               '<span class="dropdown">'
               . '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">'. Yii::$app->user->identity->nombre

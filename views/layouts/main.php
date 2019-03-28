@@ -38,20 +38,30 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Home', 'url' => ['/site/index']],
-            ['label' => 'About', 'url' => ['/site/about']],
-            ['label' => 'Contact', 'url' => ['/site/contact']],
+            ['label' => 'Eventos', 'url' => ['/eventos/index']],
+            ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
+            ['label' => 'Calendarios (proximamente)', 'url' => ['/usuarios/calendario']],
             Yii::$app->user->isGuest ? (
-                ['label' => 'Login', 'url' => ['/site/login']]
+              '<li>'
+              . Html::a('Login', ['site/login'])
+              . '</li><li>'
+              . Html::a('Registrar', ['usuarios/create'])
+              . '</li>'
             ) : (
-                '<li>'
-                . Html::beginForm(['/site/logout'], 'post')
-                . Html::submitButton(
-                    'Logout (' . Yii::$app->user->identity->nombre . ')',
-                    ['class' => 'btn btn-link logout']
-                )
-                . Html::endForm()
-                . '</li>'
+              '<span class="dropdown">'
+              . '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">'. Yii::$app->user->identity->nombre
+              . '<span class="caret"></span></button>'
+              . '<ul class="dropdown-menu">'
+              . '<li>' . Html::a('Ver perfil', ['usuarios/view', 'id' => Yii::$app->user->id]) . '</li>'
+              . '<li>' . Html::a('Modificar perfil', ['usuarios/update', 'id' => Yii::$app->user->id]) . '</li>'
+              . Html::beginForm(['/site/logout'], 'post')
+              . '<li>' . Html::submitButton(
+                          'Logout (' . Yii::$app->user->identity->nombre . ')',
+                          ['class' => 'btn btn-link logout'])
+              . '</li>'
+              . Html::endForm()
+              . '</ul>'
+              . '</span>'
             )
         ],
     ]);

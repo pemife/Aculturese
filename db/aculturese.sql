@@ -19,9 +19,11 @@ CREATE TABLE usuarios
                               CONSTRAINT ck_nombre_sin_espacios
                               CHECK (nombre NOT ILIKE '% %')
   , password    VARCHAR(60)   NOT NULL
-  , created_at  DATE          NOT NULL DEFAULT CURRENT_TIMESTAMP
+  , created_at  DATE          NOT NULL DEFAULT CURRENT_DATE
   , token       VARCHAR(32)
   , email       VARCHAR(255)  NOT NULL UNIQUE
+  , biografia   TEXT
+  , fechaNac    DATE
 );
 
 DROP TABLE IF EXISTS usuarios_etiquetas CASCADE;
@@ -62,8 +64,8 @@ CREATE TABLE eventos
 (
     id              BIGSERIAL         PRIMARY KEY
   , nombre          VARCHAR(255)      NOT NULL
-  , inicio          TIMESTAMP         NOT NULL
-  , fin             TIMESTAMP         NOT NULL
+  , inicio          TIMESTAMP(0)      NOT NULL
+  , fin             TIMESTAMP(0)      NOT NULL
   , lugar_id        BIGINT            REFERENCES lugares(id)
                                       ON DELETE CASCADE
                                       ON UPDATE CASCADE
@@ -92,7 +94,7 @@ CREATE TABLE comentarios
 (
     id            BIGSERIAL         PRIMARY KEY
   , texto         TEXT              NOT NULL
-  , created_at    TIMESTAMP         NOT NULL
+  , created_at    TIMESTAMP(0)      NOT NULL
                                     DEFAULT CURRENT_TIMESTAMP
   , usuario_id    BIGINT            NOT NULL
                                     REFERENCES usuarios(id)
@@ -110,7 +112,8 @@ VALUES ('Coches'),('Futbol'),('Motos'),('Airsoft'),('Ajedrez'),('Videojuegos'),
 ('Interpretación');
 
 INSERT INTO usuarios (nombre, password, email)
-VALUES ('pepe', crypt('pepe', gen_salt('bf', 10)), 'jose.millan@iesdonana.org');
+VALUES ('admin', crypt('hnmpl', gen_salt('bf', 10)), 'admin@aculturese.com'),
+('pepe', crypt('pepe', gen_salt('bf', 10)), 'jose.millan@iesdonana.org');
 
 INSERT INTO lugares (lat, lon, nombre)
 VALUES (36.787998, -6.340801, 'IES Donana');
@@ -121,10 +124,10 @@ VALUES ('Cine'),('Concierto'),('Festival'),('Cumpleaños'),('Viaje'),
 ('Comedia'),('Interpretación'),('Temático');
 
 INSERT INTO eventos (nombre, inicio, fin, lugar_id, categoria_id)
-VALUES ('Revision de proyecto', '2019-04-02 15:15:00', '2019-04-02 21:30:00', 1, 6);
+VALUES ('Revision de proyecto', '2019-04-02 13:15:00', '2019-04-02 19:30:00', 1, 7);
 
 INSERT INTO comentarios(texto, usuario_id, evento_id)
-VALUES ('Estoy deseando ir!', 1, 1);
+VALUES ('Estoy deseando ir!', 2, 1);
 
 INSERT INTO eventos_etiquetas(evento_id, etiqueta_id)
 VALUES (1,13),(1,14);

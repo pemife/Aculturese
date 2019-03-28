@@ -24,12 +24,10 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
             'lat',
             'lon',
-            'nombre',
+            'nombre',   //añadir accion con enlace para ver en google maps 28/03
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

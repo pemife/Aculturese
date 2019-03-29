@@ -35,6 +35,9 @@ $this->params['breadcrumbs'][] = $this->title;
     ?>
 
     <?= Html::a('Lugar nuevo', ['/lugares/create'], ['class' => 'btn btn-primary']) ?>
+    <!-- TODO: Quiero conseguir que se pueda crear con un modal donde aparezcan los Lugares
+    señalados con marcas en maps, y que permita añadir una marca nueva para un
+    lugar nuevo creado -->
 
     <br><br>
 

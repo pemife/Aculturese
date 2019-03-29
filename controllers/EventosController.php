@@ -2,8 +2,10 @@
 
 namespace app\controllers;
 
+use app\models\Categorias;
 use app\models\Eventos;
 use app\models\EventosSearch;
+use app\models\Lugares;
 use Yii;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
@@ -80,6 +82,8 @@ class EventosController extends Controller
         }
 
         return $this->render('create', [
+            'listaCategorias' => $this->listaCategorias(),
+            'listaLugares' => $this->listaLugares(),
             'model' => $model,
         ]);
     }
@@ -132,5 +136,21 @@ class EventosController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    private function listaCategorias()
+    {
+        return Categorias::find()
+            ->select('nombre')
+            ->indexBy('id')
+            ->column();
+    }
+
+    private function listaLugares()
+    {
+        return Lugares::find()
+            ->select('nombre')
+            ->indexBy('id')
+            ->column();
     }
 }

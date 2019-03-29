@@ -61,8 +61,8 @@ class Eventos extends \yii\db\ActiveRecord
             'nombre' => 'Nombre',
             'inicio' => 'Inicio',
             'fin' => 'Fin',
-            'lugar_id' => 'Lugar ID',
-            'categoria_id' => 'Categoria ID',
+            'lugar_id' => 'Lugar',
+            'categoria_id' => 'Categoria',
         ];
     }
 

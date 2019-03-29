@@ -19,6 +19,8 @@ use Yii;
  * @property Lugares $lugar
  * @property EventosEtiquetas[] $eventosEtiquetas
  * @property Etiquetas[] $etiquetas
+ * @property UsuariosEventos[] $usuariosEventos
+ * @property Usuarios[] $usuarios
  */
 class Eventos extends \yii\db\ActiveRecord
 {
@@ -99,5 +101,21 @@ class Eventos extends \yii\db\ActiveRecord
     public function getEtiquetas()
     {
         return $this->hasMany(Etiquetas::className(), ['id' => 'etiqueta_id'])->viaTable('eventos_etiquetas', ['evento_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsuariosEventos()
+    {
+        return $this->hasMany(UsuariosEventos::className(), ['evento_id' => 'id'])->inverseOf('evento');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsuarios()
+    {
+        return $this->hasMany(Usuarios::className(), ['id' => 'usuario_id'])->viaTable('usuarios_eventos', ['evento_id' => 'id']);
     }
 }

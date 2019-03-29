@@ -103,6 +103,19 @@ CREATE TABLE comentarios
                                     REFERENCES eventos(id)
 );
 
+DROP TABLE IF EXISTS usuarios_eventos CASCADE;
+
+CREATE TABLE usuarios_eventos
+(
+    evento_id     BIGINT            REFERENCES eventos(id)
+                                    ON DELETE NO ACTION
+                                    ON UPDATE CASCADE
+  , usuario_id    BIGINT            REFERENCES usuarios(id)
+                                    ON DELETE NO ACTION
+                                    ON UPDATE CASCADE
+  , PRIMARY KEY(evento_id, usuario_id)
+);
+
 -- INSERTS
 
 INSERT INTO etiquetas(nombre)
@@ -130,4 +143,7 @@ INSERT INTO comentarios(texto, usuario_id, evento_id)
 VALUES ('Estoy deseando ir!', 2, 1);
 
 INSERT INTO eventos_etiquetas(evento_id, etiqueta_id)
-VALUES (1,13),(1,14);
+VALUES (1, 13), (1, 14);
+
+INSERT INTO usuarios_eventos(usuario_id, evento_id)
+VALUES (1, 1), (2, 1)

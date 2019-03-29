@@ -2,12 +2,13 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Eventos;
 use app\models\EventosSearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
+use yii\web\UploadedFile;
 
 /**
  * EventosController implements the CRUD actions for Eventos model.
@@ -46,7 +47,7 @@ class EventosController extends Controller
 
     /**
      * Displays a single Eventos model.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -67,7 +68,15 @@ class EventosController extends Controller
         $model = new Eventos();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $file = 'uploads/' . $model->id . '.jpg';
+            $model->imagen = UploadedFile::getInstance($model, 'imagen');
+            $model->imagen->saveAs($file);
             return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        if (Yii::$app->user->isGuest) {
+            Yii::$app->session->setFlash('error', 'Debes estar logeado para crear un evento');
+            return $this->goBack();
         }
 
         return $this->render('create', [
@@ -78,7 +87,7 @@ class EventosController extends Controller
     /**
      * Updates an existing Eventos model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -98,7 +107,7 @@ class EventosController extends Controller
     /**
      * Deletes an existing Eventos model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -112,7 +121,7 @@ class EventosController extends Controller
     /**
      * Finds the Eventos model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param int $id
      * @return Eventos the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */

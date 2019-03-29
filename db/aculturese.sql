@@ -137,7 +137,7 @@ VALUES ('Cine'),('Concierto'),('Festival'),('Cumpleaños'),('Viaje'),
 ('Comedia'),('Interpretación'),('Temático');
 
 INSERT INTO eventos (nombre, inicio, fin, lugar_id, categoria_id)
-VALUES ('Revision de proyecto', '2019-04-02 13:15:00', '2019-04-02 19:30:00', 1, 7);
+VALUES ('Revisión de proyecto', '2019-04-02 13:15:00', '2019-04-02 19:30:00', 1, 7);
 
 INSERT INTO comentarios(texto, usuario_id, evento_id)
 VALUES ('Estoy deseando ir!', 2, 1);

@@ -84,14 +84,17 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     /**
      * @return \yii\db\ActiveQuery
      */
+    public function getUsuariosEtiquetas()
+    {
+        return $this->hasMany(UsuariosEtiquetas::className(), ['usuario_id' => 'id'])->inverseOf('usuario');
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
     public function getEtiquetas()
     {
         return $this->hasMany(Etiquetas::className(), ['id' => 'etiqueta_id'])->viaTable('usuarios_etiquetas', ['usuario_id' => 'id']);
-    }
-
-    public function getEventos()
-    {
-        return $this->hasMany(Eventos::className(), ['id' => 'evento_id'])->viaTable('usuarios_eventos', ['usuario_id' => 'id']);
     }
 
     /**

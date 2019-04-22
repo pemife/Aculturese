@@ -1,7 +1,7 @@
 <?php
 
 use yii\helpers\Html;
-use yii\widgets\ListView;
+use yii\grid\GridView;
 
 /* @var $this yii\web\View */
 /* @var $searchModel app\models\EventosSearch */
@@ -22,10 +22,25 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= ListView::widget([
+    <?= GridView::widget([
         'dataProvider' => $dataProvider,
-        'itemOptions' => ['class' => 'item'],
-        'itemView' => '_vistaEvento',
+        'filterModel' => $searchModel,
+        'columns' => [
+
+          'nombre',
+          'inicio:DateTime',
+          'fin:DateTime',
+          [
+            'attribute' => 'lugar.nombre',
+            'label' => 'Donde',
+          ],
+          [
+            'attribute' => 'categoria.nombre',
+            'label' => 'Categoria',
+          ],
+
+          ['class' => 'yii\grid\ActionColumn'],
+        ],
     ]); ?>
 
 

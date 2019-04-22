@@ -38,3 +38,6 @@ tests/chromedriver
 
 # local environment variables
 .env
+
+# donde se guardan las imagenes
+web/uploads

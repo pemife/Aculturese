@@ -19,9 +19,13 @@ use Yii;
  * @property Lugares $lugar
  * @property EventosEtiquetas[] $eventosEtiquetas
  * @property Etiquetas[] $etiquetas
+ * @property UsuariosEventos[] $usuariosEventos
+ * @property Usuarios[] $usuarios
  */
 class Eventos extends \yii\db\ActiveRecord
 {
+    public $imagen;
+
     /**
      * {@inheritdoc}
      */
@@ -43,6 +47,7 @@ class Eventos extends \yii\db\ActiveRecord
             [['nombre'], 'string', 'max' => 255],
             [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categorias::className(), 'targetAttribute' => ['categoria_id' => 'id']],
             [['lugar_id'], 'exist', 'skipOnError' => true, 'targetClass' => Lugares::className(), 'targetAttribute' => ['lugar_id' => 'id']],
+            [['imagen'], 'file', 'extensions' => 'jpg'],
         ];
     }
 
@@ -56,8 +61,8 @@ class Eventos extends \yii\db\ActiveRecord
             'nombre' => 'Nombre',
             'inicio' => 'Inicio',
             'fin' => 'Fin',
-            'lugar_id' => 'Lugar ID',
-            'categoria_id' => 'Categoria ID',
+            'lugar_id' => 'Lugar',
+            'categoria_id' => 'Categoria',
         ];
     }
 
@@ -88,16 +93,26 @@ class Eventos extends \yii\db\ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEventosEtiquetas()
+    public function getEtiquetas()
     {
-        return $this->hasMany(EventosEtiquetas::className(), ['evento_id' => 'id'])->inverseOf('evento');
+        return $this->hasMany(Etiquetas::className(), ['id' => 'etiqueta_id'])->viaTable('eventos_etiquetas', ['evento_id' => 'id']);
     }
 
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getEtiquetas()
+    public function getUsuarios()
     {
-        return $this->hasMany(Etiquetas::className(), ['id' => 'etiqueta_id'])->viaTable('eventos_etiquetas', ['evento_id' => 'id']);
+        return $this->hasMany(Usuarios::className(), ['id' => 'usuario_id'])->viaTable('usuarios_eventos', ['evento_id' => 'id']);
+    }
+
+    public function getUrlImagen()
+    {
+        return $this->tieneImagen() ? Yii::getAlias('@uploadsUrl/' . $this->id . '.jpg') : null;
+    }
+
+    public function tieneImagen()
+    {
+        return file_exists(Yii::getAlias('@uploads/' . $this->id . '.jpg'));
     }
 }

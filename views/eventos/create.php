@@ -1,5 +1,7 @@
 <?php
 
+use kartik\datetime\DateTimePicker;
+
 use yii\helpers\Html;
 use kartik\select2\Select2;
 use yii\widgets\ActiveForm;
@@ -19,10 +21,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'inicio')->textInput() ?>
+    <?= $form->field($model, 'inicio')->widget(DateTimePicker::classname(), [
+      'name' => 'Inicio',
+      'model' => $model,
+      'attribute' => $model->inicio
+    ]); ?>
     <!-- html input calendario -->
 
-    <?= $form->field($model, 'fin')->textInput() ?>
+    <?= $form->field($model, 'fin')->widget(DateTimePicker::classname(), [
+      'name' => 'Fin',
+      'model' => $model,
+      'attribute' => $model->fin
+    ]); ?>
     <!-- html input calendario -->
 
     <?= $form->field($model, 'lugar_id')->widget(Select2::classname(), [

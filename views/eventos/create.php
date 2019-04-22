@@ -60,6 +60,12 @@ $this->params['breadcrumbs'][] = $this->title;
       ]);
     ?>
 
+    <?= $form->field($model, 'creador_id')->textInput([
+            'readonly' => true,
+            'value' => Yii::$app->user->identity->id,
+    ]);
+    ?>
+
     <?= $form->field($model, 'imagen')->fileInput() ?>
 
     <div class="form-group">

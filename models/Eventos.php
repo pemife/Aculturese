@@ -40,6 +40,7 @@ class Eventos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
+          // Controlar la diferencia entre fechaInicio y fechaFin sea positiva
             [['nombre', 'inicio', 'fin', 'categoria_id'], 'required'],
             [['inicio', 'fin'], 'safe'],
             [['lugar_id', 'categoria_id'], 'default', 'value' => null],
@@ -48,6 +49,7 @@ class Eventos extends \yii\db\ActiveRecord
             [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categorias::className(), 'targetAttribute' => ['categoria_id' => 'id']],
             [['lugar_id'], 'exist', 'skipOnError' => true, 'targetClass' => Lugares::className(), 'targetAttribute' => ['lugar_id' => 'id']],
             [['imagen'], 'file', 'extensions' => 'jpg'],
+            [['creador_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuarios::className(), 'targetAttribute' => ['creador_id' => 'id']],
         ];
     }
 
@@ -63,7 +65,16 @@ class Eventos extends \yii\db\ActiveRecord
             'fin' => 'Fin',
             'lugar_id' => 'Lugar',
             'categoria_id' => 'Categoria',
+            'creador_id' => 'Creador',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreador()
+    {
+        return $this->hasOne(Usuarios::className(), ['id' => 'creador_id'])->inverseOf('eventos');
     }
 
     /**

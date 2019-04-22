@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php if( Yii::$app->user->id === 1 ){ ?>
+    <?php if( Yii::$app->user->id === 1 || Yii::$app->user->id === $model->creador_id ){ ?>
       <p>
           <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
           <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -37,6 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'fin',
             'lugar_id',
             'categoria_id',
+            'creador_id',
         ],
     ]) ?>
 

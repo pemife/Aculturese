@@ -128,4 +128,20 @@ class UsuariosController extends Controller
 
         throw new NotFoundHttpException('The requested page does not exist.');
     }
+
+    public function actionRecupass()
+    {
+        if ($email = Yii::$app->request->post('email')) {
+            Yii::$app->mailer->compose()
+            ->setFrom('aculturese@outlook.es')
+            ->setTo($email)
+            ->setSubject('Recuperacion de contraseña')
+            ->setTextBody('prueba de mail')
+            ->setHtmlBody('<b>prueba de mail</b>')
+            ->send();
+        } else {
+            $email = '';
+            return $this->render('escribeMail');
+        }
+    }
 }

@@ -149,6 +149,7 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return Yii::$app->security->validatePassword($password, $this->password);
     }
+
     public function beforeSave($insert)
     {
         if (!parent::beforeSave($insert)) {

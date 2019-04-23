@@ -48,8 +48,9 @@ AppAsset::register($this);
               . Html::a('Registrar', ['usuarios/create'])
               . '</li>'
             ) : (
-              '<span class="dropdown">'
-              . '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">'. Yii::$app->user->identity->nombre
+              '<span class="dropdown" style="margin: 0; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">'
+              . '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">'
+              . Yii::$app->user->identity->nombre . '&nbsp;&nbsp;'
               . '<span class="caret"></span></button>'
               . '<ul class="dropdown-menu">'
               . '<li>' . Html::a('Ver perfil', ['usuarios/view', 'id' => Yii::$app->user->id]) . '</li>'

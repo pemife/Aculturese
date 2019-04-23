@@ -41,13 +41,16 @@ class Eventos extends \yii\db\ActiveRecord
     {
         return [
             [['nombre', 'inicio', 'fin', 'categoria_id'], 'required'],
-            [['inicio', 'fin'], 'safe'],
+            ['inicio', 'datetime', 'format' => 'php:Y-m-d H:i'],
+            ['fin', 'datetime', 'format' => 'php:Y-m-d H:i'],
+            ['inicio', 'compare', 'compareAttribute' => 'fin', 'operator' => '<', 'enableClientValidation' => false],
             [['lugar_id', 'categoria_id'], 'default', 'value' => null],
             [['lugar_id', 'categoria_id'], 'integer'],
             [['nombre'], 'string', 'max' => 255],
             [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categorias::className(), 'targetAttribute' => ['categoria_id' => 'id']],
             [['lugar_id'], 'exist', 'skipOnError' => true, 'targetClass' => Lugares::className(), 'targetAttribute' => ['lugar_id' => 'id']],
             [['imagen'], 'file', 'extensions' => 'jpg'],
+            [['creador_id'], 'exist', 'skipOnError' => true, 'targetClass' => Usuarios::className(), 'targetAttribute' => ['creador_id' => 'id']],
         ];
     }
 
@@ -63,7 +66,16 @@ class Eventos extends \yii\db\ActiveRecord
             'fin' => 'Fin',
             'lugar_id' => 'Lugar',
             'categoria_id' => 'Categoria',
+            'creador_id' => 'Creador',
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreador()
+    {
+        return $this->hasOne(Usuarios::className(), ['id' => 'creador_id'])->inverseOf('eventos');
     }
 
     /**

@@ -9,7 +9,7 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model app\models\Eventos */
 
-$this->title = 'Create Eventos';
+$this->title = 'Crear un evento';
 $this->params['breadcrumbs'][] = ['label' => 'Eventos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -58,6 +58,12 @@ $this->params['breadcrumbs'][] = $this->title;
             'allowClear' => true,
         ],
       ]);
+    ?>
+
+    <?= $form->field($model, 'creador_id')->textInput([
+            'readonly' => true,
+            'value' => Yii::$app->user->identity->id,
+    ]);
     ?>
 
     <?= $form->field($model, 'imagen')->fileInput() ?>

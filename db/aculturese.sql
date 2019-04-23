@@ -73,6 +73,10 @@ CREATE TABLE eventos
                                       REFERENCES categorias(id)
                                       ON DELETE NO ACTION
                                       ON UPDATE CASCADE
+  , creador_id      BIGINT            NOT NULL
+                                      REFERENCES usuarios(id)
+                                      ON DELETE NO ACTION
+                                      ON UPDATE CASCADE
 );
 
 DROP TABLE IF EXISTS eventos_etiquetas CASCADE;
@@ -136,8 +140,8 @@ VALUES ('Cine'),('Concierto'),('Festival'),('Cumpleaños'),('Viaje'),
 ('Excursión'),('Académico'),('Animales'),('Fiesta local'),('Educativo'),
 ('Comedia'),('Interpretación'),('Temático');
 
-INSERT INTO eventos (nombre, inicio, fin, lugar_id, categoria_id)
-VALUES ('Revisión de proyecto', '2019-04-02 13:15:00', '2019-04-02 19:30:00', 1, 7);
+INSERT INTO eventos (nombre, inicio, fin, lugar_id, categoria_id, creador_id)
+VALUES ('Revisión de proyecto', '2019-04-02 13:15:00', '2019-04-02 19:30:00', 1, 7, 1);
 
 INSERT INTO comentarios(texto, usuario_id, evento_id)
 VALUES ('Estoy deseando ir!', 2, 1);

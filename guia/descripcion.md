@@ -1,16 +1,15 @@
 # Descripción general del proyecto
 
-Explicar.
+Aculturese es una pagina de gestión de eventos culturales que permite al usuario
+localizar eventos con google maps, notificarse al correo y con google calendar,
+y planear eventos privados conjunto a los demas usuarios.
 
 ## Funcionalidad principal de la aplicación
 
-Explicar.
+La principal funcionalidad es la gestión de eventos y asistentes a los eventos
+locales de Sanlúcar de Barrameda.
 
 ## Objetivos generales
-
-A diferencia de los casos de uso, los objetivos no tienen principio ni fin.
-
-Por ejemplo:
 
 * Objetivo: "gestionar los alquileres y las devoluciones de las películas".
 * Casos de uso: "alquilar una película", "devolver una película".

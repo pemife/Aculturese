@@ -18,7 +18,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php if(Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id ) { ?>
       <p>
         <?= Html::a('Actualizar perfil', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->id], [
+        <?= Html::a('Borrar perfil', ['delete', 'id' => $model->id], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',

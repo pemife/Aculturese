@@ -40,7 +40,6 @@ class Eventos extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-          // Controlar la diferencia entre fechaInicio y fechaFin sea positiva
             [['nombre', 'inicio', 'fin', 'categoria_id'], 'required'],
             ['inicio', 'datetime', 'format' => 'php:Y-m-d H:i'],
             ['fin', 'datetime', 'format' => 'php:Y-m-d H:i'],

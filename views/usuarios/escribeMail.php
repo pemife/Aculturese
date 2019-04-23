@@ -13,12 +13,14 @@ $this->params['breadcrumbs'][] = $this->title;
 
   <h1><?= Html::encode($this->title) ?></h1>
 
-  <?= Html::beginForm([
-    'action' => ['usuarios/recupass'],
-    'method' => 'post'
-  ]); ?>
+  <?= Html::beginForm(['usuarios/recupass'], 'post'); ?>
 
-  <?= Html::textInput('Email', 'email') ?>
+  <?= Html::label('Email', 'email') ?>
+  <?= Html::textInput('email', '', ['class' => 'form-control']) ?>
+
+  <p>
+    &nbsp;&nbsp;&nbsp;&nbsp;
+  </p>
 
   <div class="form-group">
       <?= Html::submitButton('Enviar', ['class' => 'btn btn-success']) ?>

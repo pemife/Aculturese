@@ -42,7 +42,9 @@ class Eventos extends \yii\db\ActiveRecord
         return [
           // Controlar la diferencia entre fechaInicio y fechaFin sea positiva
             [['nombre', 'inicio', 'fin', 'categoria_id'], 'required'],
-            [['inicio', 'fin'], 'safe'],
+            ['inicio', 'datetime', 'format' => 'php:Y-m-d H:i'],
+            ['fin', 'datetime', 'format' => 'php:Y-m-d H:i'],
+            ['inicio', 'compare', 'compareAttribute' => 'fin', 'operator' => '<', 'enableClientValidation' => false],
             [['lugar_id', 'categoria_id'], 'default', 'value' => null],
             [['lugar_id', 'categoria_id'], 'integer'],
             [['nombre'], 'string', 'max' => 255],

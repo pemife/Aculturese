@@ -132,16 +132,16 @@ class UsuariosController extends Controller
     public function actionRecupass()
     {
         if ($email = Yii::$app->request->post('email')) {
-            // Si el email esta vinculado con un usuario
-            // Yii::$app->mailer->compose()
-            // ->setFrom('aculturese@outlook.es')
-            // ->setTo($email)
-            // ->setSubject('Recuperacion de contraseña')
-            // ->setTextBody('prueba de mail')
-            // ->setHtmlBody('<b>prueba de mail</b>')
-            // ->send();
-            //
-            // Yii::$app->session->setFlash('info', 'Se ha intentado mandar el email');
+            //Si el email esta vinculado con un usuario
+            Yii::$app->mailer->compose()
+            ->setFrom('aculturese@outlook.es')
+            ->setTo($email)
+            ->setSubject('Recuperacion de contraseña')
+            ->setTextBody('prueba de mail')
+            ->setHtmlBody('<b>prueba de mail</b>')
+            ->send();
+
+            Yii::$app->session->setFlash('info', 'Se ha intentado mandar el email');
 
             return $this->redirect(['site/login']);
         }

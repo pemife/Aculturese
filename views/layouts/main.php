@@ -48,7 +48,7 @@ AppAsset::register($this);
               . Html::a('Registrar', ['usuarios/create'])
               . '</li>'
             ) : (
-              '<span class="dropdown">'
+              '<label class="dropdown">'
               . '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">'. Yii::$app->user->identity->nombre
               . '<span class="caret"></span></button>'
               . '<ul class="dropdown-menu">'
@@ -61,7 +61,7 @@ AppAsset::register($this);
               . '</li>'
               . Html::endForm()
               . '</ul>'
-              . '</span>'
+              . '</label>'
             )
         ],
     ]);

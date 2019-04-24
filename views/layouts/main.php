@@ -4,7 +4,9 @@
 /* @var $content string */
 
 use app\widgets\Alert;
+
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
@@ -48,21 +50,18 @@ AppAsset::register($this);
               . Html::a('Registrar', ['usuarios/create'])
               . '</li>'
             ) : (
-              '<span class="dropdown" style="margin: 0; position: absolute; top: 50%; -ms-transform: translateY(-50%); transform: translateY(-50%);">'
-              . '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">'
-              . Yii::$app->user->identity->nombre . '&nbsp;&nbsp;'
-              . '<span class="caret"></span></button>'
-              . '<ul class="dropdown-menu">'
-              . '<li>' . Html::a('Ver perfil', ['usuarios/view', 'id' => Yii::$app->user->id]) . '</li>'
-              . '<li>' . Html::a('Modificar perfil', ['usuarios/update', 'id' => Yii::$app->user->id]) . '</li>'
-              . Html::beginForm(['/site/logout'], 'post')
-              . '<li>' . Html::submitButton(
-                          'Logout (' . Yii::$app->user->identity->nombre . ')',
-                          ['class' => 'btn btn-link logout'])
-              . '</li>'
-              . Html::endForm()
-              . '</ul>'
-              . '</span>'
+              [
+                'label' => Yii::$app->user->identity->nombre,
+                'items' => [
+                 ['label' => 'Ver perfil', 'url' => Url::to(['usuarios/view', 'id' => Yii::$app->user->id])],
+                 ['label' => 'Modificar perfil', 'url' => Url::to(['usuarios/update', 'id' => Yii::$app->user->id])],
+                 Html::beginForm(['site/logout'], 'post')
+                 . Html::submitButton(
+                    '&nbsp;&nbsp;Logout (' . Yii::$app->user->identity->nombre . ')',
+                    ['class' => 'btn btn-link logout'])
+                 . Html::endForm()
+                ],
+              ]
             )
         ],
     ]);

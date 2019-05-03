@@ -170,4 +170,9 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         }
         return true;
     }
+
+    public function creaToken()
+    {
+        return Yii::$app->security->generateRandomString(32);
+    }
 }

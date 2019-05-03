@@ -6,6 +6,8 @@ use app\models\Usuarios;
 use app\models\UsuariosSearch;
 use Yii;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -68,8 +70,11 @@ class UsuariosController extends Controller
 
         $model->scenario = Usuarios::SCENARIO_CREATE;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->token = $model->creaToken();
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -133,18 +138,38 @@ class UsuariosController extends Controller
     {
         if ($email = Yii::$app->request->post('email')) {
             // Si el email esta vinculado con un usuario
-            Yii::$app->mailer->compose()
-            ->setFrom('aculturese@gmail.com')
-            ->setTo($email)
-            ->setSubject('Recuperacion de contraseña')
-            ->setHtmlBody('Para recuperar la contraseña, pulsa <a href="#">aqui</a>')
-            ->send();
+            if ($model = Usuarios::find()->where(['email' => $email])->one()) {
+                $model->scenario = Usuarios::SCENARIO_UPDATE;
+                Yii::$app->mailer->compose()
+                ->setFrom('aculturese@gmail.com')
+                ->setTo($email)
+                ->setSubject('Recuperacion de contraseña')
+                ->setHtmlBody('Para recuperar la contraseña, pulsa ' . Html::a('aqui', Url::to(['usuarios/cambio-pass', 'id' => $model->id], true)))
+                ->send();
 
-            Yii::$app->session->setFlash('info', 'Se ha intentado mandar el email');
+                Yii::$app->session->setFlash('info', 'Se ha mandado el email');
+            } else {
+                Yii::$app->session->setFlash('error', 'No se ha encontrado una cuenta vinculada a ese email');
+            }
 
             return $this->redirect(['site/login']);
         }
         $email = '';
         return $this->render('escribeMail');
+    }
+
+    public function actionCambioPass($id)
+    {
+        $model = $this->findModel($id);
+
+        $model->scenario = Usuarios::SCENARIO_UPDATE;
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['site/login']);
+        }
+
+        return $this->render('cambioPass', [
+            'model' => $model,
+        ]);
     }
 }

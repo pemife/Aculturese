@@ -144,7 +144,12 @@ class UsuariosController extends Controller
                 ->setFrom('aculturese@gmail.com')
                 ->setTo($email)
                 ->setSubject('Recuperacion de contraseña')
-                ->setHtmlBody('Para recuperar la contraseña, pulsa ' . Html::a('aqui', Url::to(['usuarios/cambio-pass', 'id' => $model->id], true)))
+                ->setHtmlBody('Para recuperar la contraseña, pulsa '
+                . Html::a('aqui', Url::to(['usuarios/cambio-pass', 'id' => $model->id], true), [
+                  'data-method' => 'POST', 'data-params' => [
+                    'tokenUsuario' => $model->token,
+                  ],
+                ]))
                 ->send();
 
                 Yii::$app->session->setFlash('info', 'Se ha mandado el email');
@@ -161,6 +166,11 @@ class UsuariosController extends Controller
     public function actionCambioPass($id)
     {
         $model = $this->findModel($id);
+
+        if (Yii::$app->request->post('tokenUsuario') !== $model->token) {
+            Yii::$app->session->setFlash('error', 'Validación incorrecta de usuario');
+            return $this->redirect(['site/login']);
+        }
 
         $model->scenario = Usuarios::SCENARIO_UPDATE;
 

@@ -12,24 +12,30 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <style>
+  .jas{
+    display: inline-flex;
+  }
+
   .titulo{
-    float: left;
+    padding-left: 0;
   }
 
   .opciones{
+    padding-right: 0;
+    margin-top: 30px;
     float: right;
   }
 </style>
 
 <div class="usuarios-view">
-
+  <div class="jas">
     <div class="titulo">
       <h1><?= Html::encode($model->nombre) ?></h1>
     </div>
 
     <div class="opciones">
       <span class="dropdown">
-        <button class="glyphicon glyphicon-cog" type="button" data-toggle="dropdown"></button>
+        <button class="glyphicon glyphicon-cog" type="button" data-toggle="dropdown" style="height: 30px; width: 30px;"></button>
         <ul class="dropdown-menu pull-right">
           <?php if(Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id ) { ?>
             <li>
@@ -47,15 +53,15 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php } ?>
           </ul>
         </span>
-    </div>
+      </div>
+  </div>
 
-    <?= DetailView::widget([
-        'model' => $model,
-        'attributes' => [
-            'nombre',
-            'created_at:RelativeTime',
-            'email:email',
-        ],
+  <?= DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+      'nombre',
+      'created_at:RelativeTime',
+      'email:email',
+    ],
     ]) ?>
-
 </div>

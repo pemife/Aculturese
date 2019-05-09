@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
@@ -12,23 +13,19 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <style>
-  .jas{
+  .nombreOpciones{
     display: inline-flex;
-  }
-
-  .titulo{
-    padding-left: 0;
+    justify-content: space-between;
+    width: 100%;
   }
 
   .opciones{
-    padding-right: 0;
     margin-top: 30px;
-    float: right;
   }
 </style>
 
 <div class="usuarios-view">
-  <div class="jas">
+  <div class="nombreOpciones">
     <div class="titulo">
       <h1><?= Html::encode($model->nombre) ?></h1>
     </div>
@@ -37,20 +34,29 @@ $this->params['breadcrumbs'][] = $this->title;
       <span class="dropdown">
         <button class="glyphicon glyphicon-cog" type="button" data-toggle="dropdown" style="height: 30px; width: 30px;"></button>
         <ul class="dropdown-menu pull-right">
-          <?php if(Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id ) { ?>
             <li>
-              <?= Html::a('Modificar perfil', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
+              <?= Html::a('Modificar perfil',
+                [
+                  (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id ) ?
+                  Url::to(['usuarios/update', 'id' => $model->id]) :
+                  ''
+                ],
+                [
+                  'class' => 'btn btn-link',
+                  'disabled' => !(Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id ),
+                ]
+              ) ?>
             </li>
             <li>
               <?= Html::a('Borrar perfil', ['delete', 'id' => $model->id], [
-                'class' => 'btn btn-danger',
+                'class' => 'btn btn-link',
+                'disabled' => !(Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id ),
                 'data' => [
-                  'confirm' => 'Are you sure you want to delete this item?',
+                  'confirm' => 'Seguro que quieres borrar el perfil?',
                   'method' => 'post',
                 ],
-                ]) ?>
-              </li>
-            <?php } ?>
+              ]) ?>
+            </li>
           </ul>
         </span>
       </div>

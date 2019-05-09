@@ -11,6 +11,11 @@ $this->title = $model->nombre;
 $this->params['breadcrumbs'][] = ['label' => 'Usuarios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
+$puedeModificar = (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id);
+$enlaceMod = $puedeModificar ? Url::to(['usuarios/update', 'id' => $model->id]) : '#';
+$enlaceBor = $puedeModificar ? Url::to(['usuarios/delete', 'id' => $model->id]) : '#';
+
 ?>
 <style>
   .nombreOpciones{
@@ -35,26 +40,21 @@ $this->params['breadcrumbs'][] = $this->title;
         <button class="glyphicon glyphicon-cog" type="button" data-toggle="dropdown" style="height: 30px; width: 30px;"></button>
         <ul class="dropdown-menu pull-right">
             <li>
-              <?= Html::a('Modificar perfil',
-                [
-                  (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id ) ?
-                  Url::to(['usuarios/update', 'id' => $model->id]) :
-                  ''
-                ],
-                [
+              <?= Html::a('Modificar perfil', $enlaceMod, [
                   'class' => 'btn btn-link',
-                  'disabled' => !(Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id ),
-                ]
-              ) ?>
+                  'disabled' => !$puedeModificar,
+                ]) ?>
             </li>
             <li>
-              <?= Html::a('Borrar perfil', ['delete', 'id' => $model->id], [
+              <?= Html::a('Borrar perfil', $enlaceBor, [
                 'class' => 'btn btn-link',
-                'disabled' => !(Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id ),
-                'data' => [
-                  'confirm' => 'Seguro que quieres borrar el perfil?',
-                  'method' => 'post',
-                ],
+                'disabled' => !$puedeModificar,
+                'data' => $puedeModificar ?
+                  [
+                    'confirm' => 'Seguro que quieres borrar el perfil?',
+                    'method' => 'post',
+                  ] :
+                  [],
               ]) ?>
             </li>
           </ul>

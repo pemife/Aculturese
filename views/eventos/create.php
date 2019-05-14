@@ -44,7 +44,6 @@ $this->registerJs($js);
       'model' => $model,
       'attribute' => $model->fin
     ]); ?>
-    <!-- html input calendario -->
 
     <?= $form->field($model, 'lugar_id')->widget(Select2::classname(), [
         'data' => $listaLugares,

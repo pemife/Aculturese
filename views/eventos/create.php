@@ -2,7 +2,10 @@
 
 use kartik\datetime\DateTimePicker;
 
+use yii\bootstrap\Modal;
+
 use yii\helpers\Html;
+use yii\helpers\Url;
 use kartik\select2\Select2;
 use yii\widgets\ActiveForm;
 
@@ -12,6 +15,14 @@ use yii\widgets\ActiveForm;
 $this->title = 'Crear un evento';
 $this->params['breadcrumbs'][] = ['label' => 'Eventos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+$js = <<<EOF
+$('#modalButton').click(function(e){
+    $('#modal').modal('show').find('#modalContenido').load($(this).attr('value'));
+});
+EOF;
+$this->registerJs($js);
+
 ?>
 <div class="eventos-create">
 
@@ -44,10 +55,29 @@ $this->params['breadcrumbs'][] = $this->title;
       ]);
     ?>
 
-    <?= Html::a('Lugar nuevo', ['/lugares/create'], ['class' => 'btn btn-primary']) ?>
-    <!-- TODO: Quiero conseguir que se pueda crear con un modal donde aparezcan los Lugares
-    señalados con marcas en maps, y que permita añadir una marca nueva para un
-    lugar nuevo creado -->
+    <?= Html::button('Lugar nuevo', ['value' => Url::to(['/lugares/create']), 'id' => 'modalButton'], [
+      'class' => 'btn btn-primary',
+      ]) ?>
+
+    <?php
+
+      Modal::begin([
+        'header' => '<h2>Crear lugar</h2>',
+        'id' => 'modal',
+        'size' => 'modal-lg',
+      ]);
+
+      ?>
+      <div id="modalContenido">
+      </div>
+      <?php
+
+      Modal::end();
+
+    ?>
+    <!-- TODO: Quiero conseguir que se pueda crear con un modal donde aparezcan
+    los Lugares señalados con marcas en maps, y que permita añadir una marca
+    nueva para un lugar nuevo creado -->
 
     <br><br>
 

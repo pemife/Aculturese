@@ -32,7 +32,7 @@ AppAsset::register($this);
     <?php
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
+        'brandUrl' => Url::to(['eventos/publicos']),
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
@@ -40,7 +40,7 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Eventos', 'url' => ['/eventos/index']],
+            ['label' => 'Eventos', 'url' => ['/eventos/publicos']],
             ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
             ['label' => 'Calendarios (proximamente)', 'url' => ['/usuarios/calendario']],
             Yii::$app->user->isGuest ? (

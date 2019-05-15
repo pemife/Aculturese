@@ -17,13 +17,16 @@ $this->params['breadcrumbs'][] = ['label' => 'Eventos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 $js = <<<EOF
+$(document).ready(function() {
+  //$('#modalContenido').load($('#modalButton').attr('value'));
+});
 $('#modalButton').click(function(e){
-    $('#modal').modal('show').find('#modalContenido').load($(this).attr('value'));
+  $('#modal').modal('show').find($('#modalContenido').load($(this).attr('value')));
 });
 EOF;
 $this->registerJs($js);
-
 ?>
+
 <div class="eventos-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
@@ -37,7 +40,6 @@ $this->registerJs($js);
       'model' => $model,
       'attribute' => $model->inicio
     ]); ?>
-    <!-- html input calendario -->
 
     <?= $form->field($model, 'fin')->widget(DateTimePicker::classname(), [
       'name' => 'Fin',
@@ -96,6 +98,8 @@ $this->registerJs($js);
     ?>
 
     <?= $form->field($model, 'imagen')->fileInput() ?>
+
+    <?= $form->field($model, 'es_privado')->dropDownList([false => 'Publico', true => 'Privado'])->label('Privacidad') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Guardar', ['class' => 'btn btn-success']) ?>

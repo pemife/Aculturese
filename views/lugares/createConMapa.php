@@ -3,19 +3,30 @@
 $this->title = 'Create Lugares';
 $this->params['breadcrumbs'][] = ['label' => 'Lugares', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+$js = <<<EOF
+EOF;
+$this->registerJs($js);
 ?>
+<style>
+
+  #map {
+    height: 100%;
+    overflow: visible;
+  }
+</style>
 <div class="">
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
-  <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
-  <script type="text/javascript">
-    var map = L.map('map').setView([51.505, -0.09], 13);
-
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-    }).addTo(map);
-
-    L.marker([51.5, -0.09]).addTo(map).bindPopup('A pretty CSS3 popup.<br> Easily customizable.').openPopup();
+  <div id="map"></div>
+  <script>
+    var map;
+    function initMap() {
+      map = new google.maps.Map(document.getElementById('map'), {
+        center: {lat: 36.778888, lng: -6.354103},
+        zoom: 8
+      });
+    }
   </script>
-  <div class="map">
-  </div>
+  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGV2Cl4bWtapl5etmS5Yoz_HRWiHL-S6w&callback=initMap"
+  async defer></script>
 </div>
+//36.778888, lng: -6.354103

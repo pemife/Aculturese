@@ -66,6 +66,7 @@ CREATE TABLE eventos
   , nombre          VARCHAR(255)      NOT NULL
   , inicio          TIMESTAMP(0)      NOT NULL
   , fin             TIMESTAMP(0)      NOT NULL
+  , es_privado      BOOLEAN           NOT NULL DEFAULT FALSE
   , lugar_id        BIGINT            REFERENCES lugares(id)
                                       ON DELETE CASCADE
                                       ON UPDATE CASCADE

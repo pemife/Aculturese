@@ -48,6 +48,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'value' => Html::a($model->creador->nombre, ['usuarios/view', 'id' => $model->creador->id]),
               'format' => 'html',
             ],
+            'es_privado:boolean',
         ],
     ]) ?>
 

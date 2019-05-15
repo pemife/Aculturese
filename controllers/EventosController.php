@@ -7,6 +7,7 @@ use app\models\Eventos;
 use app\models\EventosSearch;
 use app\models\Lugares;
 use Yii;
+use yii\data\ActiveDataProvider;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -40,6 +41,18 @@ class EventosController extends Controller
     {
         $searchModel = new EventosSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    public function actionPublicos()
+    {
+        $searchModel = new EventosSearch();
+        $query = Eventos::find()->where(['es_privado' => false]);
+        $dataProvider = new ActiveDataProvider(['query' => $query]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,

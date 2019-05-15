@@ -11,6 +11,7 @@ use Yii;
  * @property string $nombre
  * @property string $inicio
  * @property string $fin
+ * @property bool $es_privado
  * @property int $lugar_id
  * @property int $categoria_id
  *
@@ -46,6 +47,7 @@ class Eventos extends \yii\db\ActiveRecord
             ['inicio', 'compare', 'compareAttribute' => 'fin', 'operator' => '<', 'enableClientValidation' => false],
             [['lugar_id', 'categoria_id'], 'default', 'value' => null],
             [['lugar_id', 'categoria_id'], 'integer'],
+            [['es_privado'], 'boolean'],
             [['nombre'], 'string', 'max' => 255],
             [['categoria_id'], 'exist', 'skipOnError' => true, 'targetClass' => Categorias::className(), 'targetAttribute' => ['categoria_id' => 'id']],
             [['lugar_id'], 'exist', 'skipOnError' => true, 'targetClass' => Lugares::className(), 'targetAttribute' => ['lugar_id' => 'id']],
@@ -67,6 +69,7 @@ class Eventos extends \yii\db\ActiveRecord
             'lugar_id' => 'Lugar',
             'categoria_id' => 'Categoria',
             'creador_id' => 'Creador',
+            'es_privado' => 'Es privado',
         ];
     }
 

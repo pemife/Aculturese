@@ -132,7 +132,7 @@ class UsuariosController extends Controller
     {
         $model = $this->findModel($id);
 
-        if () {
+        if ($this->tienePermisos($model)) {
             $model->scenario = Usuarios::SCENARIO_MODPERFIL;
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {

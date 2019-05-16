@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Usuarios;
 use app\models\UsuariosSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -25,6 +26,27 @@ class UsuariosController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                 ],
+            ],
+            'access' => [
+              'class' => AccessControl::classname(),
+              'only' => ['update', 'login', 'logout'],
+              'rules' => [
+                [
+                  'allow' => true,
+                  'actions' => ['update'],
+                  'roles' => ['@'],
+                ],
+                [
+                  'allow' => true,
+                  'actions' => ['login'],
+                  'roles' => ['?'],
+                ],
+                [
+                  'allow' => true,
+                  'actions' => ['logout'],
+                  'roles' => ['@'],
+                ],
+              ],
             ],
         ];
     }
@@ -95,6 +117,21 @@ class UsuariosController extends Controller
         }
 
         return $this->render('update', [
+            'model' => $model,
+        ]);
+    }
+
+    public function actionModperfil($id)
+    {
+        $model = $this->findModel($id);
+
+        $model->scenario = Usuarios::SCENARIO_MODPERFIL;
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+
+        return $this->render('modificarPerfil', [
             'model' => $model,
         ]);
     }

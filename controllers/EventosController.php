@@ -8,6 +8,7 @@ use app\models\EventosSearch;
 use app\models\Lugares;
 use Yii;
 use yii\data\ActiveDataProvider;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -29,6 +30,17 @@ class EventosController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                 ],
+            ],
+            'access' => [
+              'class' => AccessControl::classname(),
+              'only' => ['index'],
+              'rules' => [
+                [
+                  'allow' => false,
+                  'actions' => ['index'],
+                  'roles' => ['*'],
+                ],
+              ],
             ],
         ];
     }

@@ -35,6 +35,9 @@ class UsuariosController extends Controller
                   'allow' => true,
                   'actions' => ['update'],
                   'roles' => ['@'],
+                  /*'matchCallback' => function ($rule, $action) {
+                      return Yii::$app->user->id === 1;
+                  },*/
                 ],
                 [
                   'allow' => true,
@@ -110,30 +113,38 @@ class UsuariosController extends Controller
     {
         $model = $this->findModel($id);
 
-        $model->scenario = Usuarios::SCENARIO_UPDATE;
+        if ($this->tienePermisos($model)) {
+            $model->scenario = Usuarios::SCENARIO_UPDATE;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+
+            return $this->render('update', [
+              'model' => $model,
+            ]);
         }
-
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+        Yii::$app->session->setFlash('danger', 'No puedes modificar el perfil de otra persona');
+        return $this->goHome();
     }
 
     public function actionModperfil($id)
     {
         $model = $this->findModel($id);
 
-        $model->scenario = Usuarios::SCENARIO_MODPERFIL;
+        if ($this->tienePermisos($model)) {
+            $model->scenario = Usuarios::SCENARIO_MODPERFIL;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+
+            return $this->render('modificarPerfil', [
+                'model' => $model,
+            ]);
         }
-
-        return $this->render('modificarPerfil', [
-            'model' => $model,
-        ]);
+        Yii::$app->session->setFlash('danger', 'No puedes modificar el perfil de otra persona');
+        return $this->goHome();
     }
 
     /**
@@ -145,9 +156,16 @@ class UsuariosController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
 
-        return $this->redirect(['index']);
+        if ($this->tienePermisos($model)) {
+            $model->delete();
+
+            return $this->redirect(['index']);
+        }
+
+        Yii::$app->session->setFlash('danger', 'No puedes borrar el perfil de otra persona');
+        return $this->goHome();
     }
 
     /**
@@ -180,5 +198,10 @@ class UsuariosController extends Controller
             $email = '';
             return $this->render('escribeMail');
         }
+    }
+
+    public function tienePermisos($model)
+    {
+        return Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id;
     }
 }

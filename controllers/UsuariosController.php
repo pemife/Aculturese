@@ -113,7 +113,7 @@ class UsuariosController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id) {
+        if ($this->tienePermisos($model)) {
             $model->scenario = Usuarios::SCENARIO_UPDATE;
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -132,7 +132,7 @@ class UsuariosController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id) {
+        if () {
             $model->scenario = Usuarios::SCENARIO_MODPERFIL;
 
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
@@ -158,7 +158,7 @@ class UsuariosController extends Controller
     {
         $model = $this->findModel($id);
 
-        if (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id) {
+        if ($this->tienePermisos($model)) {
             $model->delete();
 
             return $this->redirect(['index']);
@@ -198,5 +198,10 @@ class UsuariosController extends Controller
             $email = '';
             return $this->render('escribeMail');
         }
+    }
+
+    public function tienePermisos($model)
+    {
+        return Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id;
     }
 }

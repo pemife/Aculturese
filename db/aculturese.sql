@@ -116,6 +116,8 @@ CREATE TABLE usuarios_eventos
   , PRIMARY KEY(evento_id, usuario_id)
 );
 
+// USUARIOS ETIQUETAS TAMBIEN
+
 -- INSERTS
 
 INSERT INTO etiquetas(nombre)

@@ -16,8 +16,6 @@ $this->params['breadcrumbs'][] = 'Cambiar Contraseña';
 
     <?php $form = ActiveForm::begin([]); ?>
 
-    <?= $model->password = "" ?>
-
     <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'password_repeat')->passwordInput(['maxlength' => true]) ?>

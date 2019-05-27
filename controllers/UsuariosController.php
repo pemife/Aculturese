@@ -188,6 +188,8 @@ class UsuariosController extends Controller
 
     public function actionOlvideNick()
     {
-        return $this->render('olvideNick');
+        return $this->render('olvideNick', [
+            'model' => $model,
+        ]);
     }
 }

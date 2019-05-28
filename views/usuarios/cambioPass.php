@@ -14,9 +14,11 @@ $this->params['breadcrumbs'][] = 'Cambiar Contraseña';
 
   <h3><?= Html::encode($this->title) ?></h3>
 
-    <?php $form = ActiveForm::begin([]); ?>
-
-    <?= $model->password = "" ?>
+    <?php $form = ActiveForm::begin([
+        'action' => ['cambio-pass', 'id' => $model->id],
+        'method' => 'post',
+      ]);
+    ?>
 
     <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
 

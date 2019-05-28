@@ -178,6 +178,8 @@ class UsuariosController extends Controller
             return $this->redirect(['site/login']);
         }
 
+        $model->password= '';
+
         return $this->render('cambioPass', [
             'model' => $model,
         ]);

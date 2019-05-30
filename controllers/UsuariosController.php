@@ -176,7 +176,7 @@ class UsuariosController extends Controller
 
         $model->scenario = Usuarios::SCENARIO_UPDATE;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        if ($model->load(Yii::$app->request->post('Usuarios')) && $model->save()) {
             Yii::$app->session->setFlash('info', 'La contraseña se ha guardado correctamente');
             return $this->redirect(['site/login']);
         }

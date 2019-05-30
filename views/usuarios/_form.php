@@ -14,8 +14,6 @@ use kartik\date\DatePicker;
 
 <div class="usuarios-form">
 
-    <?= $model->password = "" ?>
-
     <?php $form = ActiveForm::begin(); ?>
 
     <?= $form->field($model, 'nombre')->textInput(['maxlength' => true]) ?>
@@ -29,10 +27,9 @@ use kartik\date\DatePicker;
     <?= $form->field($model, 'biografia')->textarea() ?>
 
     <?= $form->field($model, 'fechanac')->widget(DatePicker::classname(), [
-      'name' => 'Fecha de nacimiento',
       'model' => $model,
       'attribute' => $model->fechanac,
-    ]) ?>
+    ])->label('Fecha de nacimiento') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

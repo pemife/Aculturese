@@ -43,7 +43,7 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['nombre', 'password', 'email'], 'required'],
-            [['fechanac'], 'safe'],
+            [['fechanac', 'created_at'], 'safe'],
             [['biografia'], 'string'],
             [['nombre'], 'string', 'max' => 32],
             [['password'], 'string', 'max' => 60],
@@ -87,6 +87,14 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     public function getEtiquetas()
     {
         return $this->hasMany(Etiquetas::className(), ['id' => 'etiqueta_id'])->viaTable('usuarios_etiquetas', ['usuario_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsuariosEventos()
+    {
+        return $this->hasMany(UsuariosEventos::className(), ['usuario_id' => 'id'])->inverseOf('usuario');
     }
 
     public function getEventos()

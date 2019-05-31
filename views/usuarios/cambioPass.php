@@ -28,6 +28,8 @@ $this->params['breadcrumbs'][] = 'Cambiar Contraseña';
 
     <?= $form->field($model, 'fechanac')->hiddenInput(['value' => $model->fechanac])->label(false) ?>
 
+    <?= $form->field($model, 'created_at')->hiddenInput(['value' => $model->created_at])->label(false) ?>
+
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>

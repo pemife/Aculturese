@@ -125,6 +125,8 @@ class UsuariosController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
             }
 
+            $model->password = '';
+
             return $this->render('update', [
               'model' => $model,
             ]);
@@ -132,7 +134,7 @@ class UsuariosController extends Controller
         Yii::$app->session->setFlash('danger', 'No puedes modificar el perfil de otra persona');
         return $this->goHome();
     }
-  
+
     public function actionModperfil($id)
     {
         $model = $this->findModel($id);
@@ -143,7 +145,7 @@ class UsuariosController extends Controller
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
-          
+
             $model->password = '';
 
             return $this->render('modificarPerfil', [

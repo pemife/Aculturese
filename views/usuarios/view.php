@@ -36,7 +36,6 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambioPass', 'id' => $model->
     <div class="titulo">
       <h1><?= Html::encode($model->nombre) ?></h1>
     </div>
-
     <div class="opciones">
       <span class="dropdown">
         <button class="glyphicon glyphicon-cog" type="button" data-toggle="dropdown" style="height: 30px; width: 30px;"></button>
@@ -69,7 +68,6 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambioPass', 'id' => $model->
         </span>
       </div>
   </div>
-
   <?= DetailView::widget([
     'model' => $model,
     'attributes' => [

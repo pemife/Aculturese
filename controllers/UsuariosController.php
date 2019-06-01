@@ -7,6 +7,8 @@ use app\models\UsuariosSearch;
 use Yii;
 use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -93,8 +95,11 @@ class UsuariosController extends Controller
 
         $model->scenario = Usuarios::SCENARIO_CREATE;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+        if ($model->load(Yii::$app->request->post())) {
+            $model->token = $model->creaToken();
+            if ($model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
         }
 
         return $this->render('create', [
@@ -127,7 +132,7 @@ class UsuariosController extends Controller
         Yii::$app->session->setFlash('danger', 'No puedes modificar el perfil de otra persona');
         return $this->goHome();
     }
-
+  
     public function actionModperfil($id)
     {
         $model = $this->findModel($id);
@@ -138,6 +143,8 @@ class UsuariosController extends Controller
             if ($model->load(Yii::$app->request->post()) && $model->save()) {
                 return $this->redirect(['view', 'id' => $model->id]);
             }
+          
+            $model->password = '';
 
             return $this->render('modificarPerfil', [
                 'model' => $model,
@@ -187,17 +194,53 @@ class UsuariosController extends Controller
     public function actionRecupass()
     {
         if ($email = Yii::$app->request->post('email')) {
-            Yii::$app->mailer->compose()
-            ->setFrom('aculturese@outlook.es')
-            ->setTo($email)
-            ->setSubject('Recuperacion de contraseña')
-            ->setTextBody('prueba de mail')
-            ->setHtmlBody('<b>prueba de mail</b>')
-            ->send();
-        } else {
-            $email = '';
-            return $this->render('escribeMail');
+            // Si el email esta vinculado con un usuario
+            if ($model = Usuarios::find()->where(['email' => $email])->one()) {
+                $model->scenario = Usuarios::SCENARIO_UPDATE;
+                Yii::$app->mailer->compose()
+                ->setFrom('aculturese@gmail.com')
+                ->setTo($email)
+                ->setSubject('Recuperacion de contraseña')
+                ->setHtmlBody('Para recuperar la contraseña, pulsa '
+                . Html::a('aqui', Url::to(['usuarios/cambio-pass', 'id' => $model->id], true), [
+                  'data-method' => 'POST', 'data-params' => [
+                    'tokenUsuario' => $model->token,
+                  ],
+                ]))
+                ->send();
+
+                Yii::$app->session->setFlash('info', 'Se ha mandado el email');
+            } else {
+                Yii::$app->session->setFlash('error', 'No se ha encontrado una cuenta vinculada a ese email');
+            }
+
+            return $this->redirect(['site/login']);
         }
+        $email = '';
+        return $this->render('escribeMail');
+    }
+
+    public function actionCambioPass($id)
+    {
+        $model = $this->findModel($id);
+
+        if (Yii::$app->request->post('tokenUsuario') !== $model->token) {
+            Yii::$app->session->setFlash('error', 'Validación incorrecta de usuario');
+            return $this->redirect(['site/login']);
+        }
+
+        $model->scenario = Usuarios::SCENARIO_UPDATE;
+
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('info', 'La contraseña se ha guardado correctamente');
+            return $this->redirect(['site/login']);
+        }
+
+        $model->password = $model->password_repeat = '';
+
+        return $this->render('cambioPass', [
+            'model' => $model,
+        ]);
     }
 
     public function tienePermisos($model)

@@ -44,10 +44,10 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return [
             [['nombre', 'password', 'email'], 'required'],
-            [['fechanac'], 'safe'],
+            [['fechanac', 'created_at'], 'safe'],
             [['biografia'], 'string'],
-            [['nombre', 'token'], 'string', 'max' => 32],
-            [['password'], 'string', 'max' => 60],
+            [['nombre'], 'string', 'max' => 32],
+            [['password', 'password_repeat'], 'string', 'max' => 60],
             [['password', 'password_repeat', 'email'], 'required', 'on' => [self::SCENARIO_CREATE]],
             [['email'], 'required', 'on' => [self::SCENARIO_UPDATE, self::SCENARIO_MODPERFIL]],
             [['password'], 'compare', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
@@ -89,6 +89,14 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     public function getEtiquetas()
     {
         return $this->hasMany(Etiquetas::className(), ['id' => 'etiqueta_id'])->viaTable('usuarios_etiquetas', ['usuario_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUsuariosEventos()
+    {
+        return $this->hasMany(UsuariosEventos::className(), ['usuario_id' => 'id'])->inverseOf('usuario');
     }
 
     public function getEventos()
@@ -171,5 +179,10 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
             }
         }
         return true;
+    }
+
+    public function creaToken()
+    {
+        return Yii::$app->security->generateRandomString(32);
     }
 }

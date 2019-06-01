@@ -204,12 +204,15 @@ class UsuariosController extends Controller
                 ->setTo($email)
                 ->setSubject('Recuperacion de contraseña')
                 ->setHtmlBody('Para recuperar la contraseña, pulsa '
-                . Html::a('aqui', Url::to(['usuarios/cambio-pass', 'id' => $model->id], true), [
-                  'data-method' => 'POST', 'data-params' => [
-                    'tokenUsuario' => $model->token,
+                . Html::a('aqui', Url::to('usuarios/cambio-pass', true), [
+                  'data' => [
+                    'method' => 'post',
+                    'params' => [
+                      'tokenUsuario' => $model->token,
+                      'idUsuario' => $model->id,
+                    ],
                   ],
-                ]))
-                ->send();
+                ]))->send();
 
                 Yii::$app->session->setFlash('info', 'Se ha mandado el email');
             } else {
@@ -219,12 +222,14 @@ class UsuariosController extends Controller
             return $this->redirect(['site/login']);
         }
         $email = '';
-        return $this->render('escribeMail');
+        return $this->render('escribeMail', [
+          'email' => $email,
+        ]);
     }
 
-    public function actionCambioPass($id)
+    public function actionCambioPass()
     {
-        $model = $this->findModel($id);
+        $model = $this->findModel(Yii::$app->request->post('idUsuario'));
 
         if (Yii::$app->request->post('tokenUsuario') !== $model->token) {
             Yii::$app->session->setFlash('error', 'Validación incorrecta de usuario');
@@ -244,7 +249,25 @@ class UsuariosController extends Controller
             'model' => $model,
         ]);
     }
+  
+    public function actionOlvideNick()
+    {
+        if (Yii::$app->request->post('email')) {
+            $model = Usuarios::find()->where(['email' => Yii::$app->request->post('email')])->one();
+            if ($model) {
+                Yii::$app->session->setFlash('info', 'Tu nick es: ' . $model->nombre);
+                return $this->redirect(['site/login']);
+            }
+            Yii::$app->session->setFlash('error', 'El email que ha insertado no tiene ningun usuario asignado, pulse ' . Html::a('aqui', ['usuarios/create']) . ' para registrarse.');
+            return $this->redirect(['site/login']);
+        }
 
+        $email = '';
+        return $this->render('escribeMail', [
+          'email' => $email,
+        ]);
+    }
+  
     public function tienePermisos($model)
     {
         return Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id;

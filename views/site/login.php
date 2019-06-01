@@ -38,7 +38,7 @@ $this->params['breadcrumbs'][] = $this->title;
           &nbsp;&nbsp;&nbsp;&nbsp;
         </p>
 
-        <?= Html::a('Olvidé mi nick', ['usuarios/olvideNick']) ?>
+        <?= Html::a('Olvidé mi nick', ['usuarios/olvide-nick']) ?>
 
         <br><br>
 

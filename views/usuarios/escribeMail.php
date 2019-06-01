@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $form yii\widgets\ActiveForm */
 
-$this->title = 'Olvide contraseña';
+$this->title = 'Escribe email';
 $this->params['breadcrumbs'][] = ['label' => 'Usuarios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
   <h1><?= Html::encode($this->title) ?></h1>
 
-  <?= Html::beginForm(['usuarios/recupass'], 'post'); ?>
+  <?= Html::beginForm(); ?>
 
   <?= Html::label('Email', 'email') ?>
   <?= Html::textInput('email', '', ['class' => 'form-control']) ?>

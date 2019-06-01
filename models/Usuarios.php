@@ -25,6 +25,7 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
 {
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
+    const SCENARIO_MODPERFIL = 'modperfil';
 
     public $password_repeat;
 
@@ -48,6 +49,7 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
             [['nombre'], 'string', 'max' => 32],
             [['password', 'password_repeat'], 'string', 'max' => 60],
             [['password', 'password_repeat', 'email'], 'required', 'on' => [self::SCENARIO_CREATE]],
+            [['email'], 'required', 'on' => [self::SCENARIO_UPDATE, self::SCENARIO_MODPERFIL]],
             [['password'], 'compare', 'on' => [self::SCENARIO_CREATE, self::SCENARIO_UPDATE]],
             [['email'], 'string', 'max' => 255],
             [['email'], 'unique'],

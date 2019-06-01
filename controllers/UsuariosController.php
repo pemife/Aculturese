@@ -163,7 +163,9 @@ class UsuariosController extends Controller
             return $this->redirect(['site/login']);
         }
         $email = '';
-        return $this->render('escribeMail');
+        return $this->render('escribeMail', [
+          'email' => $email,
+        ]);
     }
 
     public function actionCambioPass()
@@ -188,8 +190,19 @@ class UsuariosController extends Controller
 
     public function actionOlvideNick()
     {
-        return $this->render('olvideNick', [
-            'model' => $model,
+        if (Yii::$app->request->post('email')) {
+            $model = Usuarios::find()->where(['email' => Yii::$app->request->post('email')])->one();
+            if ($model) {
+                Yii::$app->session->setFlash('info', 'Tu nick es: ' . $model->nombre);
+                return $this->redirect(['site/login']);
+            }
+            Yii::$app->session->setFlash('error', 'El email que ha insertado no tiene ningun usuario asignado, pulse ' . Html::a('aqui', ['usuarios/create']) . ' para registrarse.');
+            return $this->redirect(['site/login']);
+        }
+
+        $email = '';
+        return $this->render('escribeMail', [
+          'email' => $email,
         ]);
     }
 }

@@ -5,6 +5,7 @@ namespace app\controllers;
 use app\models\Usuarios;
 use app\models\UsuariosSearch;
 use Yii;
+use yii\filters\AccessControl;
 use yii\filters\VerbFilter;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -27,6 +28,30 @@ class UsuariosController extends Controller
                 'actions' => [
                     'delete' => ['POST'],
                 ],
+            ],
+            'access' => [
+              'class' => AccessControl::classname(),
+              'only' => ['update', 'login', 'logout'],
+              'rules' => [
+                [
+                  'allow' => true,
+                  'actions' => ['update'],
+                  'roles' => ['@'],
+                  /*'matchCallback' => function ($rule, $action) {
+                      return Yii::$app->user->id === 1;
+                  },*/
+                ],
+                [
+                  'allow' => true,
+                  'actions' => ['login'],
+                  'roles' => ['?'],
+                ],
+                [
+                  'allow' => true,
+                  'actions' => ['logout'],
+                  'roles' => ['@'],
+                ],
+              ],
             ],
         ];
     }
@@ -93,15 +118,42 @@ class UsuariosController extends Controller
     {
         $model = $this->findModel($id);
 
-        $model->scenario = Usuarios::SCENARIO_UPDATE;
+        if ($this->tienePermisos($model)) {
+            $model->scenario = Usuarios::SCENARIO_UPDATE;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+
+            $model->password = '';
+
+            return $this->render('update', [
+              'model' => $model,
+            ]);
         }
+        Yii::$app->session->setFlash('danger', 'No puedes modificar el perfil de otra persona');
+        return $this->goHome();
+    }
 
-        return $this->render('update', [
-            'model' => $model,
-        ]);
+    public function actionModperfil($id)
+    {
+        $model = $this->findModel($id);
+
+        if ($this->tienePermisos($model)) {
+            $model->scenario = Usuarios::SCENARIO_MODPERFIL;
+
+            if ($model->load(Yii::$app->request->post()) && $model->save()) {
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+
+            $model->password = '';
+
+            return $this->render('modificarPerfil', [
+                'model' => $model,
+            ]);
+        }
+        Yii::$app->session->setFlash('danger', 'No puedes modificar el perfil de otra persona');
+        return $this->goHome();
     }
 
     /**
@@ -113,9 +165,16 @@ class UsuariosController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $model = $this->findModel($id);
 
-        return $this->redirect(['index']);
+        if ($this->tienePermisos($model)) {
+            $model->delete();
+
+            return $this->redirect(['index']);
+        }
+
+        Yii::$app->session->setFlash('danger', 'No puedes borrar el perfil de otra persona');
+        return $this->goHome();
     }
 
     /**
@@ -180,14 +239,17 @@ class UsuariosController extends Controller
         $model->scenario = Usuarios::SCENARIO_UPDATE;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            Yii::$app->session->setFlash('info', 'La contraseña se ha guardado correctamente');
             return $this->redirect(['site/login']);
         }
+
+        $model->password = $model->password_repeat = '';
 
         return $this->render('cambioPass', [
             'model' => $model,
         ]);
     }
-
+  
     public function actionOlvideNick()
     {
         if (Yii::$app->request->post('email')) {
@@ -204,5 +266,10 @@ class UsuariosController extends Controller
         return $this->render('escribeMail', [
           'email' => $email,
         ]);
+    }
+  
+    public function tienePermisos($model)
+    {
+        return Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id;
     }
 }

@@ -2,12 +2,12 @@
 
 namespace app\controllers;
 
-use Yii;
 use app\models\Lugares;
 use app\models\LugaresSearch;
+use Yii;
+use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
-use yii\filters\VerbFilter;
 
 /**
  * LugaresController implements the CRUD actions for Lugares model.
@@ -46,7 +46,7 @@ class LugaresController extends Controller
 
     /**
      * Displays a single Lugares model.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -70,6 +70,12 @@ class LugaresController extends Controller
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
+        if (Yii::$app->request->isAjax) {
+            return $this->renderAjax('createConMapa', [
+              'model' => $model,
+            ]);
+        }
+
         return $this->render('create', [
             'model' => $model,
         ]);
@@ -78,7 +84,7 @@ class LugaresController extends Controller
     /**
      * Updates an existing Lugares model.
      * If update is successful, the browser will be redirected to the 'view' page.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -98,7 +104,7 @@ class LugaresController extends Controller
     /**
      * Deletes an existing Lugares model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
-     * @param integer $id
+     * @param int $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
@@ -112,7 +118,7 @@ class LugaresController extends Controller
     /**
      * Finds the Lugares model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
-     * @param integer $id
+     * @param int $id
      * @return Lugares the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */

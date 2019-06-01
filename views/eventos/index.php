@@ -14,7 +14,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
-    <?php if( Yii::$app->user->id === 1 ){ ?>
+    <?php if( !Yii::$app->user->isGuest ){ ?>
       <p>
         <?= Html::a('Crear Evento', ['create'], ['class' => 'btn btn-success']) ?>
       </p>

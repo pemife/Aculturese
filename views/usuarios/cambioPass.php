@@ -14,11 +14,21 @@ $this->params['breadcrumbs'][] = 'Cambiar Contraseña';
 
   <h3><?= Html::encode($this->title) ?></h3>
 
-    <?php $form = ActiveForm::begin([]); ?>
+    <?php $form = ActiveForm::begin() ?>
 
+    <?= $form->field($model, 'nombre')->hiddenInput(['value' => $model->nombre])->label(false) ?>
+  
     <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
 
     <?= $form->field($model, 'password_repeat')->passwordInput(['maxlength' => true]) ?>
+
+    <?= $form->field($model, 'email')->hiddenInput(['value' => $model->email])->label(false) ?>
+
+    <?= $form->field($model, 'biografia')->hiddenInput(['value' => $model->biografia])->label(false) ?>
+
+    <?= $form->field($model, 'fechanac')->hiddenInput(['value' => $model->fechanac])->label(false) ?>
+
+    <?= $form->field($model, 'created_at')->hiddenInput(['value' => $model->created_at])->label(false) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

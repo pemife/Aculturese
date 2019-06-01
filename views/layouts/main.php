@@ -4,7 +4,9 @@
 /* @var $content string */
 
 use app\widgets\Alert;
+
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\bootstrap\Nav;
 use yii\bootstrap\NavBar;
 use yii\widgets\Breadcrumbs;
@@ -30,7 +32,7 @@ AppAsset::register($this);
     <?php
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
-        'brandUrl' => Yii::$app->homeUrl,
+        'brandUrl' => Url::to(['eventos/publicos']),
         'options' => [
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
@@ -38,7 +40,7 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Eventos', 'url' => ['/eventos/index']],
+            ['label' => 'Eventos', 'url' => ['/eventos/publicos']],
             ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
             ['label' => 'Calendarios (proximamente)', 'url' => ['/usuarios/calendario']],
             Yii::$app->user->isGuest ? (
@@ -48,20 +50,18 @@ AppAsset::register($this);
               . Html::a('Registrar', ['usuarios/create'])
               . '</li>'
             ) : (
-              '<label class="dropdown">'
-              . '<button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">'. Yii::$app->user->identity->nombre
-              . '<span class="caret"></span></button>'
-              . '<ul class="dropdown-menu">'
-              . '<li>' . Html::a('Ver perfil', ['usuarios/view', 'id' => Yii::$app->user->id]) . '</li>'
-              . '<li>' . Html::a('Modificar perfil', ['usuarios/update', 'id' => Yii::$app->user->id]) . '</li>'
-              . Html::beginForm(['/site/logout'], 'post')
-              . '<li>' . Html::submitButton(
-                          'Logout (' . Yii::$app->user->identity->nombre . ')',
-                          ['class' => 'btn btn-link logout'])
-              . '</li>'
-              . Html::endForm()
-              . '</ul>'
-              . '</label>'
+              [
+                'label' => Yii::$app->user->identity->nombre,
+                'items' => [
+                 ['label' => 'Ver perfil', 'url' => Url::to(['usuarios/view', 'id' => Yii::$app->user->id])],
+                 ['label' => 'Modificar perfil', 'url' => Url::to(['usuarios/update', 'id' => Yii::$app->user->id])],
+                 Html::beginForm(['site/logout'], 'post')
+                 . Html::submitButton(
+                    '&nbsp;&nbsp;Logout (' . Yii::$app->user->identity->nombre . ')',
+                    ['class' => 'btn btn-link logout'])
+                 . Html::endForm()
+                ],
+              ]
             )
         ],
     ]);

@@ -66,11 +66,16 @@ CREATE TABLE eventos
   , nombre          VARCHAR(255)      NOT NULL
   , inicio          TIMESTAMP(0)      NOT NULL
   , fin             TIMESTAMP(0)      NOT NULL
+  , es_privado      BOOLEAN           NOT NULL DEFAULT FALSE
   , lugar_id        BIGINT            REFERENCES lugares(id)
                                       ON DELETE CASCADE
                                       ON UPDATE CASCADE
   , categoria_id    BIGINT            NOT NULL
                                       REFERENCES categorias(id)
+                                      ON DELETE NO ACTION
+                                      ON UPDATE CASCADE
+  , creador_id      BIGINT            NOT NULL
+                                      REFERENCES usuarios(id)
                                       ON DELETE NO ACTION
                                       ON UPDATE CASCADE
 );
@@ -138,8 +143,8 @@ VALUES ('Cine'),('Concierto'),('Festival'),('Cumpleaños'),('Viaje'),
 ('Excursión'),('Académico'),('Animales'),('Fiesta local'),('Educativo'),
 ('Comedia'),('Interpretación'),('Temático');
 
-INSERT INTO eventos (nombre, inicio, fin, lugar_id, categoria_id)
-VALUES ('Revisión de proyecto', '2019-04-02 13:15:00', '2019-04-02 19:30:00', 1, 7);
+INSERT INTO eventos (nombre, inicio, fin, lugar_id, categoria_id, creador_id)
+VALUES ('Revisión de proyecto', '2019-04-02 13:15:00', '2019-04-02 19:30:00', 1, 7, 1);
 
 INSERT INTO comentarios(texto, usuario_id, evento_id)
 VALUES ('Estoy deseando ir!', 2, 1);

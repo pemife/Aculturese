@@ -23,13 +23,12 @@ $(document).ready(function() {
 $('#modalButton').click(function(e){
   $('#modal').modal('show').find($('#modalContenido').load($(this).attr('value')));
 });
+
 EOF;
 $this->registerJs($js);
 ?>
-<!-- Esta es la libreria de Leaflet, para mapas -->
-<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"
-integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og=="
-crossorigin=""></script>
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
 
 <div class="eventos-create">
 

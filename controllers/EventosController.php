@@ -97,9 +97,13 @@ class EventosController extends Controller
         $model = new Eventos();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $file = 'uploads/' . $model->id . '.jpg';
-            $model->imagen = UploadedFile::getInstance($model, 'imagen');
-            $model->imagen->saveAs($file);
+            if (UploadedFile::getInstance($model, 'imagen')) {
+                $file = 'uploads/' . $model->id . '.jpg';
+                $model->imagen = UploadedFile::getInstance($model, 'imagen');
+                $model->imagen->saveAs($file);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+            $model->imagen = null;
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

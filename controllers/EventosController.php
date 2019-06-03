@@ -38,7 +38,9 @@ class EventosController extends Controller
                 [
                   'allow' => false,
                   'actions' => ['index'],
-                  'roles' => ['*'],
+                  'denyCallback' => function ($rule, $action) {
+                      return $this->redirect(['eventos/publicos']);
+                  },
                 ],
               ],
             ],
@@ -142,9 +144,14 @@ class EventosController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $evento = $this->findModel($id);
+        if ($this->esCreador(Yii::$app->user->id, $evento)) {
+            $evento->delete();
+            return $this->redirect(['index']);
+        }
+        Yii::$app->session->setFlash('error', 'No puedes borrar el evento sin ser el creador o administrador');
 
-        return $this->redirect(['index']);
+        return $this->goBack();
     }
 
     /**
@@ -177,5 +184,10 @@ class EventosController extends Controller
             ->select('nombre')
             ->indexBy('id')
             ->column();
+    }
+
+    public function esCreador($usuarioId, $evento)
+    {
+        return $usuarioId === $evento->creador_id;
     }
 }

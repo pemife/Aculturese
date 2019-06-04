@@ -121,7 +121,7 @@ CREATE TABLE usuarios_eventos
   , PRIMARY KEY(evento_id, usuario_id)
 );
 
-// USUARIOS ETIQUETAS TAMBIEN
+-- USUARIOS ETIQUETAS TAMBIEN
 
 -- INSERTS
 

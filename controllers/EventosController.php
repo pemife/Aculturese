@@ -149,7 +149,7 @@ class EventosController extends Controller
     public function actionDelete($id)
     {
         $evento = $this->findModel($id);
-        if ($this->esCreador(Yii::$app->user->id, $evento)) {
+        if ($this->tienePermisos($evento)) {
             $evento->delete();
             return $this->redirect(['index']);
         }
@@ -193,5 +193,10 @@ class EventosController extends Controller
     public function esCreador($usuarioId, $evento)
     {
         return $usuarioId === $evento->creador_id;
+    }
+
+    public function tienePermisos($evento)
+    {
+        return Yii::$app->user->id === 1 || $this->esCreador(Yii::$app->user->id, $evento);
     }
 }

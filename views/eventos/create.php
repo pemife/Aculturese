@@ -94,10 +94,10 @@ $this->registerJs($js);
       ]);
     ?>
 
-    <?= $form->field($model, 'creador_id')->textInput([
+    <?= $form->field($model, 'creador_id')->hiddenInput([
             'readonly' => true,
             'value' => Yii::$app->user->identity->id,
-    ]);
+    ])->label(false);
     ?>
 
     <?= $form->field($model, 'imagen')->fileInput() ?>

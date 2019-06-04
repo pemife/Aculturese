@@ -135,27 +135,6 @@ class UsuariosController extends Controller
         return $this->goHome();
     }
 
-    public function actionModperfil($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($this->tienePermisos($model)) {
-            $model->scenario = Usuarios::SCENARIO_MODPERFIL;
-
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-
-            $model->password = '';
-
-            return $this->render('modificarPerfil', [
-                'model' => $model,
-            ]);
-        }
-        Yii::$app->session->setFlash('danger', 'No puedes modificar el perfil de otra persona');
-        return $this->goHome();
-    }
-
     /**
      * Deletes an existing Usuarios model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
@@ -206,7 +185,7 @@ class UsuariosController extends Controller
                 ->setHtmlBody('Para recuperar la contraseña, pulsa '
                 . Html::a('aqui', Url::to('usuarios/cambio-pass', true), [
                   'data' => [
-                    'method' => 'post',
+                    'method' => 'POST',
                     'params' => [
                       'tokenUsuario' => $model->token,
                       'idUsuario' => $model->id,
@@ -249,7 +228,7 @@ class UsuariosController extends Controller
             'model' => $model,
         ]);
     }
-  
+
     public function actionOlvideNick()
     {
         if (Yii::$app->request->post('email')) {
@@ -267,7 +246,7 @@ class UsuariosController extends Controller
           'email' => $email,
         ]);
     }
-  
+
     public function tienePermisos($model)
     {
         return Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id;

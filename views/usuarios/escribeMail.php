@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = $this->title;
   <?= Html::beginForm(); ?>
 
   <?= Html::label('Email', 'email') ?>
-  <?= Html::textInput('email', '', ['class' => 'form-control']) ?>
+  <?= Html::textInput('email', null, ['class' => 'form-control']) ?>
 
   <p>
     &nbsp;&nbsp;&nbsp;&nbsp;

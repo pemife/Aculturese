@@ -43,7 +43,7 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['nombre', 'password', 'email'], 'required'],
+            [['nombre', 'email'], 'required'],
             [['fechanac', 'created_at'], 'safe'],
             [['biografia'], 'string'],
             [['nombre'], 'string', 'max' => 32],

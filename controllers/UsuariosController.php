@@ -183,15 +183,13 @@ class UsuariosController extends Controller
                 ->setTo($email)
                 ->setSubject('Recuperacion de contraseña')
                 ->setHtmlBody('Para recuperar la contraseña, pulsa '
-                . Html::a('aqui', Url::to('usuarios/cambio-pass', true), [
-                  'data' => [
-                    'method' => 'POST',
-                    'params' => [
-                      'tokenUsuario' => $model->token,
-                      'idUsuario' => $model->id,
-                    ],
+                . Html::a('aqui', Url::to(['usuarios/cambio-pass'], true), [
+                  'data-method' => 'POST', 'data-params' => [
+                    'tokenUsuario' => $model->token,
+                    'idUsuario' => $model->id,
                   ],
-                ]))->send();
+                ]))
+                ->send();
 
                 Yii::$app->session->setFlash('info', 'Se ha mandado el email');
             } else {
@@ -201,9 +199,7 @@ class UsuariosController extends Controller
             return $this->redirect(['site/login']);
         }
         $email = '';
-        return $this->render('escribeMail', [
-          'email' => $email,
-        ]);
+        return $this->render('escribeMail');
     }
 
     public function actionCambioPass()

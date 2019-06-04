@@ -127,29 +127,8 @@ class UsuariosController extends Controller
 
             $model->password = '';
 
-            return $this->render('update', [
-              'model' => $model,
-            ]);
-        }
-        Yii::$app->session->setFlash('danger', 'No puedes modificar el perfil de otra persona');
-        return $this->goHome();
-    }
-
-    public function actionModperfil($id)
-    {
-        $model = $this->findModel($id);
-
-        if ($this->tienePermisos($model)) {
-            $model->scenario = Usuarios::SCENARIO_MODPERFIL;
-
-            if ($model->load(Yii::$app->request->post()) && $model->save()) {
-                return $this->redirect(['view', 'id' => $model->id]);
-            }
-
-            $model->password = '';
-
             return $this->render('modificarPerfil', [
-                'model' => $model,
+              'model' => $model,
             ]);
         }
         Yii::$app->session->setFlash('danger', 'No puedes modificar el perfil de otra persona');
@@ -198,12 +177,11 @@ class UsuariosController extends Controller
         if ($email = Yii::$app->request->post('email')) {
             // Si el email esta vinculado con un usuario
             if ($model = Usuarios::find()->where(['email' => $email])->one()) {
-                $model->scenario = Usuarios::SCENARIO_UPDATE;
                 Yii::$app->mailer->compose()
                 ->setFrom('aculturese@gmail.com')
                 ->setTo($email)
-                ->setSubject('Recuperacion de contraseña')
-                ->setHtmlBody('Para recuperar la contraseña, pulsa '
+                ->setSubject('Cambio de contraseña')
+                ->setHtmlBody('Para cambiar la contraseña, pulsa '
                 . Html::a('aqui', Url::to('usuarios/cambio-pass', true), [
                   'data' => [
                     'method' => 'post',
@@ -249,7 +227,7 @@ class UsuariosController extends Controller
             'model' => $model,
         ]);
     }
-  
+
     public function actionOlvideNick()
     {
         if (Yii::$app->request->post('email')) {
@@ -267,7 +245,7 @@ class UsuariosController extends Controller
           'email' => $email,
         ]);
     }
-  
+
     public function tienePermisos($model)
     {
         return Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id;

@@ -13,10 +13,9 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
 $puedeModificar = (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id);
-$enlaceMod = $puedeModificar ? Url::to(['usuarios/modperfil', 'id' => $model->id]) : '#';
+$enlaceMod = $puedeModificar ? Url::to(['usuarios/update', 'id' => $model->id]) : '#';
 $enlaceBor = $puedeModificar ? Url::to(['usuarios/delete', 'id' => $model->id]) : '#';
-// TODO: CambioPass
-$enlacePass = $puedeModificar ? Url::to(['usuarios/cambioPass', 'id' => $model->id]) : '#';
+$enlacePass = $puedeModificar ? Url::to(['usuarios/recupass', 'id' => $model->id]) : '#';
 
 ?>
 <style>
@@ -59,7 +58,7 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambioPass', 'id' => $model->
               ]) ?>
             </li>
             <li>
-              <?= Html::a('Cambiar contraseña', $enlaceMod, [
+              <?= Html::a('Cambiar contraseña', $enlacePass, [
                   'class' => 'btn btn-link',
                   'disabled' => !$puedeModificar,
                 ]) ?>

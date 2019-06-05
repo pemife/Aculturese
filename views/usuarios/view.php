@@ -29,6 +29,17 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambioPass', 'id' => $model->
   .opciones{
     margin-top: 30px;
   }
+
+  .flex-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .flex-container > div {
+    width: 32%;
+    padding: 10px;
+  }
 </style>
 
 <div class="usuarios-view">
@@ -80,11 +91,32 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambioPass', 'id' => $model->
     ]) ?>
 
   <div>
-    <h1>Eventos de <?= $model->nombre ?></h1>
-    <?php
+    <h1>Tus eventos:</h1>
+    <div class="flex-container">
+      <?php
       foreach ($eventosUsuario as $evento) {
-        echo '<h1>' . $evento->nombre . '</h1>';
+        ?>
+        <div>
+          <h2>
+            <?= Html::a(
+              $evento->nombre,
+              Url::to(['eventos/view', 'id' => $evento->id])
+            )  ?>
+          </h2>
+
+          <?= Html::a(
+            Html::img($evento->urlImagen, ['height' => 100, 'width' => 200]),
+            Url::to(['eventos/view', 'id' => $evento->id])
+          ) ?>
+          <span>
+            <?= $evento->inicio ?><br>
+            <span class="<?= $evento->es_privado ? 'glyphicon glyphicon-lock' : 'glyphicon glyphicon-globe' ?>"></span>
+          </span>
+
+        </div>
+        <?php
       }
-     ?>
+      ?>
+    </div>
   </div>
 </div>

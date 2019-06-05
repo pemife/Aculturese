@@ -83,9 +83,14 @@ class EventosController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $model = $this->findModel($id);
+        if (!$model->es_privado || $this->tienePermisos($model) || $this->esAsistente($model)) {
+            return $this->render('view', [
+              'model' => $model,
+            ]);
+        }
+        Yii::$app->session->setFlash('error', 'No tienes acceso a ese evento');
+        return $this->redirect('publicos');
     }
 
     /**
@@ -139,6 +144,8 @@ class EventosController extends Controller
         }
 
         return $this->render('update', [
+            'listaCategorias' => $this->listaCategorias(),
+            'listaLugares' => $this->listaLugares(),
             'model' => $model,
         ]);
     }
@@ -202,5 +209,17 @@ class EventosController extends Controller
     public function tienePermisos($evento)
     {
         return Yii::$app->user->id === 1 || $this->esCreador(Yii::$app->user->id, $evento);
+    }
+
+    public function esAsistente($evento)
+    {
+        $asistentes = Usuarios::findBySql('select u.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where e.id=' . $evento->id)->all();
+        $usuario = Usuarios::findOne(Yii::$app->user->id);
+        foreach ($asistentes as $asistente) {
+            if ($asistente === $usuario) {
+                return true;
+            }
+        }
+        return false;
     }
 }

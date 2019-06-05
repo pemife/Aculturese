@@ -15,7 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 $puedeModificar = (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id);
 $enlaceMod = $puedeModificar ? Url::to(['usuarios/update', 'id' => $model->id]) : '#';
 $enlaceBor = $puedeModificar ? Url::to(['usuarios/delete', 'id' => $model->id]) : '#';
-// TODO: CambioPass
 $enlacePass = $puedeModificar ? Url::to(['usuarios/cambioPass', 'id' => $model->id]) : '#';
 
 ?>

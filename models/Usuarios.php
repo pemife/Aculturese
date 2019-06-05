@@ -189,4 +189,15 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return Yii::$app->security->generateRandomString(32);
     }
+
+    public function asistire($usuario, $evento)
+    {
+        if (!Yii::$app->user->isGuest) {
+            $sql = 'insert into usuarios_eventos(usuario_id, evento_id) values(' . $usuario->id . ', ' . $evento->id . ')';
+            Yii::$app->db->createCommand($sql)->execute();
+            Yii::$app->session->setFlash('info', 'Te has añadido satisfactoriamente como asistente');
+        } else {
+            Yii::$app->session->setFlash('error', 'Debes estar logeado para marcarte como asistente');
+        }
+    }
 }

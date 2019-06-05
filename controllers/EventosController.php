@@ -6,6 +6,7 @@ use app\models\Categorias;
 use app\models\Eventos;
 use app\models\EventosSearch;
 use app\models\Lugares;
+use app\models\Usuarios;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -97,6 +98,8 @@ class EventosController extends Controller
         $model = new Eventos();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
+            $usuario = Usuarios::findOne(Yii::$app->user->id);
+            $usuario->asistire($usuario, $model);
             if (UploadedFile::getInstance($model, 'imagen')) {
                 $file = 'uploads/' . $model->id . '.jpg';
                 $model->imagen = UploadedFile::getInstance($model, 'imagen');
@@ -104,8 +107,6 @@ class EventosController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
             }
             $model->imagen = null;
-
-            UsuariosController::asistire(Yii::$app->user, $model);
 
             return $this->redirect(['view', 'id' => $model->id]);
         }

@@ -104,6 +104,9 @@ class EventosController extends Controller
                 return $this->redirect(['view', 'id' => $model->id]);
             }
             $model->imagen = null;
+
+            UsuariosController::asistire(Yii::$app->user, $model);
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 

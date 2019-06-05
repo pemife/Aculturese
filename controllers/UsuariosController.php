@@ -2,6 +2,7 @@
 
 namespace app\controllers;
 
+use app\models\Eventos;
 use app\models\Usuarios;
 use app\models\UsuariosSearch;
 use Yii;
@@ -79,8 +80,13 @@ class UsuariosController extends Controller
      */
     public function actionView($id)
     {
+        $model = $this->findModel($id);
+        $eventosUsuario = Eventos::findBySql('select e.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where u.id=' . $model->id)->all();
+        //$eventosUsuario = Eventos::find()->with('usuarios')->all();
+
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'model' => $model,
+            'eventosUsuario' => $eventosUsuario,
         ]);
     }
 
@@ -237,5 +243,16 @@ class UsuariosController extends Controller
     public function tienePermisos($model)
     {
         return Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id;
+    }
+
+    public function asistire($usuario, $evento)
+    {
+        if (!Yii::$app->user->isGuest) {
+            $sql = 'insert into usuarios_eventos(usuario_id, evento_id) values(' . $usuario->id . ', ' . $evento->id . ')';
+            Yii::$app()->db->createCommand($sql)->execute();
+            Yii::$app->session->setFlash('info', 'Te has añadido satisfactoriamente como asistente');
+        } else {
+            Yii::$app->session->setFlash('error', 'Debes estar logeado para marcarte como asistente');
+        }
     }
 }

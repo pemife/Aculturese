@@ -71,10 +71,20 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambioPass', 'id' => $model->
   <?= DetailView::widget([
     'model' => $model,
     'attributes' => [
+      'id',
       'nombre',
       'created_at:RelativeTime',
       'email:email',
       'biografia',
     ],
     ]) ?>
+
+  <div>
+    <h1>Eventos de <?= $model->nombre ?></h1>
+    <?php
+      foreach ($eventosUsuario as $evento) {
+        echo '<h1>' . $evento->nombre . '</h1>';
+      }
+     ?>
+  </div>
 </div>

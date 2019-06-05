@@ -183,43 +183,34 @@ class UsuariosController extends Controller
                 ->setTo($email)
                 ->setSubject('Recuperacion de contraseña')
                 ->setHtmlBody('Para recuperar la contraseña, pulsa '
-                . Html::a('aqui', Url::to(['usuarios/cambio-pass'], true), [
+                . Html::a('aqui', Url::to(['usuarios/cambio-pass', 'id' => $model->id], true), [
                   'data-method' => 'POST', 'data-params' => [
                     'tokenUsuario' => $model->token,
-                    'idUsuario' => $model->id,
                   ],
                 ]))
                 ->send();
-
                 Yii::$app->session->setFlash('info', 'Se ha mandado el email');
             } else {
                 Yii::$app->session->setFlash('error', 'No se ha encontrado una cuenta vinculada a ese email');
             }
-
             return $this->redirect(['site/login']);
         }
         $email = '';
         return $this->render('escribeMail');
     }
-
-    public function actionCambioPass()
+    public function actionCambioPass($id)
     {
-        $model = $this->findModel(Yii::$app->request->post('idUsuario'));
-
+        $model = $this->findModel($id);
         if (Yii::$app->request->post('tokenUsuario') !== $model->token) {
             Yii::$app->session->setFlash('error', 'Validación incorrecta de usuario');
             return $this->redirect(['site/login']);
         }
-
         $model->scenario = Usuarios::SCENARIO_UPDATE;
-
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             Yii::$app->session->setFlash('info', 'La contraseña se ha guardado correctamente');
             return $this->redirect(['site/login']);
         }
-
         $model->password = $model->password_repeat = '';
-
         return $this->render('cambioPass', [
             'model' => $model,
         ]);

@@ -40,8 +40,8 @@ AppAsset::register($this);
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
-            ['label' => 'Eventos', 'url' => ['/eventos/publicos']],
-            ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
+            ['label' => 'Eventos publicos', 'url' => ['/eventos/publicos']],
+            ['label' => 'Perfil', 'url' => ['/usuarios/view', 'id' => Yii::$app->user->id], 'visible' => !Yii::$app->user->isGuest],
             ['label' => 'Calendarios (proximamente)', 'url' => ['/usuarios/calendario']],
             Yii::$app->user->isGuest ? (
               '<li>'
@@ -53,7 +53,6 @@ AppAsset::register($this);
               [
                 'label' => Yii::$app->user->identity->nombre,
                 'items' => [
-                 ['label' => 'Ver perfil', 'url' => Url::to(['usuarios/view', 'id' => Yii::$app->user->id])],
                  ['label' => 'Modificar perfil', 'url' => Url::to(['usuarios/update', 'id' => Yii::$app->user->id])],
                  Html::beginForm(['site/logout'], 'post')
                  . Html::submitButton(
@@ -79,7 +78,7 @@ AppAsset::register($this);
 
 <footer class="footer">
     <div class="container">
-        <p class="pull-left">&copy; My Company <?= date('Y') ?></p>
+        <p class="pull-left">&copy; Pepe Millan <?= date('Y') ?></p>
 
         <p class="pull-right"><?= Yii::powered() ?></p>
     </div>

@@ -3,30 +3,25 @@
 $this->title = 'Create Lugares';
 $this->params['breadcrumbs'][] = ['label' => 'Lugares', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
-
-$js = <<<EOF
-EOF;
-$this->registerJs($js);
 ?>
-<style>
 
+<style>
   #map {
-    height: 100%;
-    overflow: visible;
+    height: 100vh;
+    width: 100vw;
   }
 </style>
-<div class="">
-  <div id="map"></div>
-  <script>
-    var map;
-    function initMap() {
-      map = new google.maps.Map(document.getElementById('map'), {
-        center: {lat: 36.778888, lng: -6.354103},
-        zoom: 8
-      });
-    }
-  </script>
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCGV2Cl4bWtapl5etmS5Yoz_HRWiHL-S6w&callback=initMap"
-  async defer></script>
-</div>
-//36.778888, lng: -6.354103
+
+<div id="map"></div>
+<script>
+    // token: pk.eyJ1IjoicGVwZW16ZXJvIiwiYSI6ImNqd2RycTRqdDE1b3g0OG1xejJkOHg3c3MifQ.oWcUjnkG4kHYNbaNaz-ntg
+
+    var map = L.map('map', {
+        center: [36.776949, -6.350443],
+        zoom: 14
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoicGVwZW16ZXJvIiwiYSI6ImNqd2RycTRqdDE1b3g0OG1xejJkOHg3c3MifQ.oWcUjnkG4kHYNbaNaz-ntg', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+</script>

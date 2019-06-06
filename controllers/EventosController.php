@@ -6,6 +6,7 @@ use app\models\Categorias;
 use app\models\Eventos;
 use app\models\EventosSearch;
 use app\models\Lugares;
+use app\models\Usuarios;
 use Yii;
 use yii\data\ActiveDataProvider;
 use yii\filters\AccessControl;
@@ -38,7 +39,9 @@ class EventosController extends Controller
                 [
                   'allow' => false,
                   'actions' => ['index'],
-                  'roles' => ['*'],
+                  'denyCallback' => function ($rule, $action) {
+                      return $this->redirect(['eventos/publicos']);
+                  },
                 ],
               ],
             ],
@@ -80,9 +83,14 @@ class EventosController extends Controller
      */
     public function actionView($id)
     {
-        return $this->render('view', [
-            'model' => $this->findModel($id),
-        ]);
+        $model = $this->findModel($id);
+        if (!$model->es_privado || $this->tienePermisos($model) || $this->esAsistente($model)) {
+            return $this->render('view', [
+              'model' => $model,
+            ]);
+        }
+        Yii::$app->session->setFlash('error', 'No tienes acceso a ese evento');
+        return $this->redirect('publicos');
     }
 
     /**
@@ -95,9 +103,16 @@ class EventosController extends Controller
         $model = new Eventos();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            $file = 'uploads/' . $model->id . '.jpg';
-            $model->imagen = UploadedFile::getInstance($model, 'imagen');
-            $model->imagen->saveAs($file);
+            $usuario = Usuarios::findOne(Yii::$app->user->id);
+            $usuario->asistire($usuario, $model);
+            if (UploadedFile::getInstance($model, 'imagen')) {
+                $file = 'uploads/' . $model->id . '.jpg';
+                $model->imagen = UploadedFile::getInstance($model, 'imagen');
+                $model->imagen->saveAs($file);
+                return $this->redirect(['view', 'id' => $model->id]);
+            }
+            $model->imagen = null;
+
             return $this->redirect(['view', 'id' => $model->id]);
         }
 
@@ -129,6 +144,8 @@ class EventosController extends Controller
         }
 
         return $this->render('update', [
+            'listaCategorias' => $this->listaCategorias(),
+            'listaLugares' => $this->listaLugares(),
             'model' => $model,
         ]);
     }
@@ -142,9 +159,14 @@ class EventosController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $evento = $this->findModel($id);
+        if ($this->tienePermisos($evento)) {
+            $evento->delete();
+            return $this->redirect(['index']);
+        }
+        Yii::$app->session->setFlash('error', 'No puedes borrar el evento sin ser el creador o administrador');
 
-        return $this->redirect(['index']);
+        return $this->goBack();
     }
 
     /**
@@ -177,5 +199,27 @@ class EventosController extends Controller
             ->select('nombre')
             ->indexBy('id')
             ->column();
+    }
+
+    public function esCreador($usuarioId, $evento)
+    {
+        return $usuarioId === $evento->creador_id;
+    }
+
+    public function tienePermisos($evento)
+    {
+        return Yii::$app->user->id === 1 || $this->esCreador(Yii::$app->user->id, $evento);
+    }
+
+    public function esAsistente($evento)
+    {
+        $asistentes = Usuarios::findBySql('select u.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where e.id=' . $evento->id)->all();
+        $usuario = Usuarios::findOne(Yii::$app->user->id);
+        foreach ($asistentes as $asistente) {
+            if ($asistente === $usuario) {
+                return true;
+            }
+        }
+        return false;
     }
 }

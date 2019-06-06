@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $puedeModificar = (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id);
 $enlaceMod = $puedeModificar ? Url::to(['usuarios/update', 'id' => $model->id]) : '#';
 $enlaceBor = $puedeModificar ? Url::to(['usuarios/delete', 'id' => $model->id]) : '#';
-$enlacePass = $puedeModificar ? Url::to(['usuarios/recupass', 'id' => $model->id]) : '#';
+$enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model->id]) : '#';
 
 ?>
 <style>
@@ -27,6 +27,17 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/recupass', 'id' => $model->id
 
   .opciones{
     margin-top: 30px;
+  }
+
+  .flex-container{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+
+  .flex-container > div {
+    width: 32%;
+    padding: 10px;
   }
 </style>
 
@@ -61,6 +72,10 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/recupass', 'id' => $model->id
               <?= Html::a('Cambiar contraseña', $enlacePass, [
                   'class' => 'btn btn-link',
                   'disabled' => !$puedeModificar,
+                  'data-method' => 'POST',
+                  'data-params' => [
+                    'tokenUsuario' => $model->token,
+                  ],
                 ]) ?>
             </li>
           </ul>
@@ -70,10 +85,42 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/recupass', 'id' => $model->id
   <?= DetailView::widget([
     'model' => $model,
     'attributes' => [
+      'id',
       'nombre',
       'created_at:RelativeTime',
       'email:email',
       'biografia',
+      'token',
     ],
     ]) ?>
+
+  <div>
+    <h1>Tus eventos:</h1>
+    <div class="flex-container">
+      <?php
+      foreach ($eventosUsuario as $evento) {
+        ?>
+        <div>
+          <h2>
+            <?= Html::a(
+              $evento->nombre,
+              Url::to(['eventos/view', 'id' => $evento->id])
+            )  ?>
+          </h2>
+
+          <?= Html::a(
+            Html::img($evento->urlImagen, ['height' => 100, 'width' => 200]),
+            Url::to(['eventos/view', 'id' => $evento->id])
+          ) ?>
+          <span>
+            <?= $evento->inicio ?><br>
+            <span class="<?= $evento->es_privado ? 'glyphicon glyphicon-lock' : 'glyphicon glyphicon-globe' ?>"></span>
+          </span>
+
+        </div>
+        <?php
+      }
+      ?>
+    </div>
+  </div>
 </div>

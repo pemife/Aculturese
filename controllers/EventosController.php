@@ -84,9 +84,11 @@ class EventosController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        if (!$model->es_privado || $this->tienePermisos($model) || $this->esAsistente($model)) {
+        if (!$model->es_privado || $this->tienePermisos($model) || $this->esAsistente($model->id)) {
             return $this->render('view', [
               'model' => $model,
+              'listaAsistentes' => $this->listaAsistentes($model->id),
+              'usuarioLogeado' => Usuarios::findOne(Yii::$app->user->id),
             ]);
         }
         Yii::$app->session->setFlash('error', 'No tienes acceso a ese evento');
@@ -104,7 +106,7 @@ class EventosController extends Controller
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             $usuario = Usuarios::findOne(Yii::$app->user->id);
-            $usuario->asistire($usuario, $model);
+            $usuario->asistire($usuario->id, $model->id);
             if (UploadedFile::getInstance($model, 'imagen')) {
                 $file = 'uploads/' . $model->id . '.jpg';
                 $model->imagen = UploadedFile::getInstance($model, 'imagen');
@@ -169,6 +171,24 @@ class EventosController extends Controller
         return $this->goBack();
     }
 
+    public function actionAnadirParticipante($eventoId)
+    {
+        if (!$this->esAsistente($eventoId)) {
+            $usuario = Usuarios::findOne(Yii::$app->user->id);
+            $usuario->asistire($usuario->id, $eventoId);
+        }
+        return $this->renderAjax('vistaAsistentes', [
+          'listaAsistentes' => $this->listaAsistentes($eventoId),
+        ]);
+    }
+
+    public function actionListaParticipantes($eventoId)
+    {
+        return $this->renderAjax('vistaAsistentes', [
+          'listaAsistentes' => $this->listaAsistentes($eventoId),
+        ]);
+    }
+
     /**
      * Finds the Eventos model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
@@ -211,12 +231,17 @@ class EventosController extends Controller
         return Yii::$app->user->id === 1 || $this->esCreador(Yii::$app->user->id, $evento);
     }
 
-    public function esAsistente($evento)
+    public function listaAsistentes($id)
     {
-        $asistentes = Usuarios::findBySql('select u.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where e.id=' . $evento->id)->all();
+        return Usuarios::findBySql('select u.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where e.id=' . $id)->all();
+    }
+
+    public function esAsistente($eventoId)
+    {
+        $asistentes = $this->listaAsistentes($eventoId);
         $usuario = Usuarios::findOne(Yii::$app->user->id);
         foreach ($asistentes as $asistente) {
-            if ($asistente === $usuario) {
+            if ($asistente->id === $usuario->id) {
                 return true;
             }
         }

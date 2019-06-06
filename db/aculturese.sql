@@ -154,4 +154,4 @@ INSERT INTO eventos_etiquetas(evento_id, etiqueta_id)
 VALUES (1, 13), (1, 14);
 
 INSERT INTO usuarios_eventos(usuario_id, evento_id)
-VALUES (1, 1), (2, 1)
+VALUES (1, 1), (2, 1), (2, 2);

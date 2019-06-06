@@ -171,4 +171,4 @@ INSERT INTO usuarios_eventos(usuario_id, evento_id)
 VALUES (1, 1), (2, 1), (2, 2);
 
 INSERT INTO amigos(usuario_id, amigo_id)
-VALUES (2, 1);
+VALUES (2, 1), (1, 2);

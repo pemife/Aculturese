@@ -46,6 +46,9 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
   <div class="nombreOpciones">
     <div class="titulo">
       <h1><?= Html::encode($model->nombre) ?></h1>
+      <span>
+        <?= // TODO: Añadir/borrar amigo ?>
+      </span>
     </div>
     <div class="opciones">
       <span class="dropdown">
@@ -83,15 +86,33 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
         </span>
       </div>
   </div>
-  <?= DetailView::widget([
-    'model' => $model,
-    'attributes' => [
-      'nombre',
-      'created_at:RelativeTime',
-      'email:email',
-      'biografia',
-    ],
-    ]) ?>
+  <div class="flex-container">
+    <div>
+      <?= DetailView::widget([
+        'model' => $model,
+        'attributes' => [
+          'nombre',
+          'created_at:RelativeTime',
+          'email:email',
+          'biografia',
+        ],
+        ]) ?>
+    </div>
+    <div>
+      <table class="table table-striped table bordered">
+        <tr>
+          <th>Amigos: (<?= count($model->amigos) ?>)</th>
+        </tr>
+        <?php foreach ($model->amigos as $amigo) { ?>
+            <tr>
+              <td id="usuario<?= $amigo->id ?>">
+                <?= Html::a($amigo->nombre, ['view', 'id' => $amigo->id]) ?>
+              </td>
+            </tr>
+        <?php } ?>
+      </table>
+    </div>
+  </div>
 
   <div>
     <h1>Tus eventos:</h1>

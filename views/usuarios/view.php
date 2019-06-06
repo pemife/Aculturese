@@ -36,6 +36,7 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
   }
 
   .flex-container > div {
+    flex-grow: 1;
     width: 32%;
     padding: 10px;
   }

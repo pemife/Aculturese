@@ -85,12 +85,10 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
   <?= DetailView::widget([
     'model' => $model,
     'attributes' => [
-      'id',
       'nombre',
       'created_at:RelativeTime',
       'email:email',
       'biografia',
-      'token',
     ],
     ]) ?>
 

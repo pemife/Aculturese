@@ -121,6 +121,20 @@ CREATE TABLE usuarios_eventos
   , PRIMARY KEY(evento_id, usuario_id)
 );
 
+DROP TABLE IF EXISTS amigos CASCADE;
+
+CREATE TABLE amigos
+(
+      usuario_id    BIGINT          REFERENCES usuarios(id)
+                                    ON DELETE NO ACTION
+                                    ON UPDATE CASCADE
+    , amigo_id    BIGINT            REFERENCES usuarios(id)
+                                    ON DELETE NO ACTION
+                                    ON UPDATE CASCADE
+    , PRIMARY KEY(usuario_id, amigo_id)
+    , CONSTRAINT CHK_SelfFriend CHECK (usuario_id != amigo_id)
+);
+
 -- USUARIOS ETIQUETAS TAMBIEN
 
 -- INSERTS
@@ -155,3 +169,6 @@ VALUES (1, 13), (1, 14);
 
 INSERT INTO usuarios_eventos(usuario_id, evento_id)
 VALUES (1, 1), (2, 1), (2, 2);
+
+INSERT INTO amigos(usuario_id, amigo_id)
+VALUES (2, 1);

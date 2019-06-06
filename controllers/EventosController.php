@@ -88,6 +88,7 @@ class EventosController extends Controller
             return $this->render('view', [
               'model' => $model,
               'listaAsistentes' => $this->listaAsistentes($model->id),
+              'usuarioLogeado' => Usuarios::findOne(Yii::$app->user->id),
             ]);
         }
         Yii::$app->session->setFlash('error', 'No tienes acceso a ese evento');
@@ -170,16 +171,22 @@ class EventosController extends Controller
         return $this->goBack();
     }
 
-    public function actionAnadirParticipante($eventoId1)
+    public function actionAnadirParticipante($eventoId)
     {
-        if (!$this->esAsistente($eventoId1)) {
+        if (!$this->esAsistente($eventoId)) {
             $usuario = Usuarios::findOne(Yii::$app->user->id);
-            $usuario->asistire($usuario->id, $eventoId1);
-            return $this->renderAjax('vistaAsistentes', [
-              // TODO: render ajax de la tabla de los asistentes
-            ]);
+            $usuario->asistire($usuario->id, $eventoId);
         }
-        Yii::$app->session->setFlash('error', 'Ya eres un asistente de este evento');
+        return $this->renderAjax('vistaAsistentes', [
+          'listaAsistentes' => $this->listaAsistentes($eventoId),
+        ]);
+    }
+
+    public function actionListaParticipantes($eventoId)
+    {
+        return $this->renderAjax('vistaAsistentes', [
+          'listaAsistentes' => $this->listaAsistentes($eventoId),
+        ]);
     }
 
     /**
@@ -229,12 +236,12 @@ class EventosController extends Controller
         return Usuarios::findBySql('select u.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where e.id=' . $id)->all();
     }
 
-    public function esAsistente($eventoId2)
+    public function esAsistente($eventoId)
     {
-        $asistentes = $this->listaAsistentes($eventoId2);
+        $asistentes = $this->listaAsistentes($eventoId);
         $usuario = Usuarios::findOne(Yii::$app->user->id);
         foreach ($asistentes as $asistente) {
-            if ($asistente === $usuario) {
+            if ($asistente->id === $usuario->id) {
                 return true;
             }
         }

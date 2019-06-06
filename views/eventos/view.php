@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
 
@@ -10,6 +11,52 @@ $this->title = $model->nombre;
 $this->params['breadcrumbs'][] = ['label' => 'Eventos', 'url' => ['publicos']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
+
+$url = Url::to(['anadir-participante', 'eventoId' => $model->id]);
+$url2 = Url::to(['lista-participantes', 'eventoId' => $model->id]);
+$userId = $usuarioLogeado->id;
+$userNombre = $usuarioLogeado->nombre;
+
+$js = <<<EOF
+$('document').ready(function(){
+  actualizarLista();
+});
+
+$('#anadirParticipantes').click(function(e){
+  if(!$('#asistente$userId').text() == "$userNombre"){
+    $.ajax({
+      method: 'GET',
+      url: '$url',
+      data: {},
+        success: function(result){
+          if (result) {
+            $('#asistentesAjax').html(result);
+          } else {
+            alert('Ha habido un error con la lista de asistentes');
+          }
+        }
+      });
+  } else {
+    alert("Ya eres un asistente de este evento!");
+  }
+});
+
+function actualizarLista(){
+  $.ajax({
+      method: 'GET',
+      url: '$url2',
+      data: {},
+      success: function(result){
+          if (result) {
+              $('#asistentesAjax').html(result);
+          } else {
+              alert('Ha habido un error con la lista de asistentes(2)');
+          }
+      }
+    });
+}
+EOF;
+$this->registerJs($js);
 ?>
 <style>
   .flex-container{
@@ -33,7 +80,10 @@ $this->params['breadcrumbs'][] = $this->title;
 
       <p>
         <?php if( !Yii::$app->user->isGuest ){ ?>
-          <?= Html::a('Unirse', ['anadir-participante', 'eventoId1' => $model->id], ['class' => 'btn btn-success']) ?>
+          <?= Html::a('Unirse', '#', [
+            'class' => 'btn btn-success',
+            'id' => 'anadirParticipantes',
+            ]) ?>
         <?php } ?>
         <?php if( Yii::$app->user->id === 1 || Yii::$app->user->id === $model->creador_id ){ ?>
           <?= Html::a('Actualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
@@ -73,17 +123,8 @@ $this->params['breadcrumbs'][] = $this->title;
           ],
           ]) ?>
       </div>
-      <div id="tabla-asistentes">
-        <table class="table table-striped table bordered">
-          <tr>
-            <th>Asistentes: (<?= count($listaAsistentes) ?>)</th>
-            <?php foreach ($listaAsistentes as $asistente) { ?>
-              <tr>
-                <td><?= $asistente->nombre ?></td>
-              </tr>
-            <?php } ?>
-          </tr>
-        </table>
+      <div id="asistentesAjax">
+
       </div>
     </div>
 

@@ -143,8 +143,9 @@ VALUES ('Cine'),('Concierto'),('Festival'),('Cumpleaños'),('Viaje'),
 ('Excursión'),('Académico'),('Animales'),('Fiesta local'),('Educativo'),
 ('Comedia'),('Interpretación'),('Temático');
 
-INSERT INTO eventos (nombre, inicio, fin, lugar_id, categoria_id, creador_id)
-VALUES ('Revisión de proyecto', '2019-04-02 13:15:00', '2019-04-02 19:30:00', 1, 7, 1);
+INSERT INTO eventos (nombre, inicio, fin, lugar_id, categoria_id, creador_id, es_privado)
+VALUES ('Revisión de proyecto', '2019-04-02 13:15:00', '2019-04-02 19:30:00', 1, 7, 1, false),
+       ('Ejemplo de evento privado', '2019-06-02 13:15:00', '2019-06-02 19:30:00', 1, 4, 2, true);
 
 INSERT INTO comentarios(texto, usuario_id, evento_id)
 VALUES ('Estoy deseando ir!', 2, 1);

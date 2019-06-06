@@ -132,7 +132,7 @@ class UsuariosController extends Controller
             }
 
             $model->password = '';
-
+          
             return $this->render('update', [
               'model' => $model,
             ]);
@@ -183,7 +183,6 @@ class UsuariosController extends Controller
         if ($email = Yii::$app->request->post('email')) {
             // Si el email esta vinculado con un usuario
             if ($model = Usuarios::find()->where(['email' => $email])->one()) {
-                $model->scenario = Usuarios::SCENARIO_UPDATE;
                 Yii::$app->mailer->compose()
                 ->setFrom('aculturese@gmail.com')
                 ->setTo($email)

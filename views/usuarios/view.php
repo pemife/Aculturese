@@ -17,6 +17,34 @@ $enlaceMod = $puedeModificar ? Url::to(['usuarios/update', 'id' => $model->id]) 
 $enlaceBor = $puedeModificar ? Url::to(['usuarios/delete', 'id' => $model->id]) : '#';
 $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model->id]) : '#';
 
+$url2 = Url::to(['lista-amigos', 'usuarioId' => $model->id]);
+
+$js = <<<EOF
+$('document').ready(function(){
+  actualizarLista();
+});
+
+$('#botonAmistad').click(function(e){
+  actualizarLista();
+});
+
+function actualizarLista(){
+  $.ajax({
+      method: 'GET',
+      url: '$url2',
+      data: {},
+      success: function(result){
+          if (result) {
+              $('#amigosAjax').html(result);
+          } else {
+              alert('Ha habido un error con la lista de asistentes(2)');
+          }
+      }
+    });
+}
+
+EOF;
+$this->registerJs($js);
 
 ?>
 <style>
@@ -60,9 +88,9 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
         if(!Yii::$app->user->isGuest && (Yii::$app->user->id !== $model->id)){
 
           if($model->esAmigo(Yii::$app->user->id, $model->id)){
-            echo Html::button('', ['borrar-amigo', 'id' => $model->id, 'class' =>'glyphicon glyphicon-remove']);
+            echo Html::a('', ['borrar-amigo', 'id' => $model->id], ['id' => "botonAmistad", 'class' =>'glyphicon glyphicon-remove']);
           } else {
-            echo Html::button('', ['anadir-amigo', 'id' => $model->id, 'class' => 'glyphicon glyphicon-plus']);
+            echo Html::a('', ['anadir-amigo', 'id' => $model->id], ['id' => "botonAmistad", 'class' => 'glyphicon glyphicon-plus']);
           }
         }
         ?>
@@ -116,7 +144,7 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
         ],
         ]) ?>
     </div>
-    <div>
+    <div id="amigosAjax">
       <table class="table table-striped table bordered">
         <tr>
           <th>Amigos: (<?= count($model->amigos) ?>)</th>
@@ -137,6 +165,9 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
     <div class="flex-container">
       <?php
       foreach ($eventosUsuario as $evento) {
+        if(Yii::$app->user->id !== $model->id && $evento->es_privado){
+          continue;
+        }
         ?>
         <div>
           <h2>

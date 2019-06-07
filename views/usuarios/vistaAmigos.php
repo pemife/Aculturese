@@ -1,10 +1,10 @@
 <div id="tablaAmigos">
   <table class="table table-striped table bordered">
     <tr>
-      <th>Asistentes: (<?= count($listaAmigos) ?>)</th>
+      <th>Amigos: (<?= count($listaAmigos) ?>)</th>
       <?php foreach ($listaAmigos as $amigo) { ?>
         <tr>
-          <td id="amigo<?= $amigo->id ?>"><?= $amigo->nombre ?></td>
+          <td id="amigo<?= $amigo->id ?>"><?= Html::a( Html::encode($amigo->nombre), ['view', 'id' => $amigo->id]) ?></td>
         </tr>
       <?php
       }

@@ -132,7 +132,7 @@ class UsuariosController extends Controller
             }
 
             $model->password = '';
-          
+
             return $this->render('update', [
               'model' => $model,
             ]);
@@ -236,6 +236,13 @@ class UsuariosController extends Controller
         $email = '';
         return $this->render('escribeMail', [
           'email' => $email,
+        ]);
+    }
+
+    public function actionListaAmigos($usuarioId)
+    {
+        return $this->renderAjax('vistaAmigos', [
+          'listaAmigos' => $this->findModel($usuarioId)->amigos,
         ]);
     }
 

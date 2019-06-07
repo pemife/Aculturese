@@ -204,4 +204,11 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         Yii::$app->session->setFlash('error', 'Debes estar logeado para marcarte como asistente');
         return false;
     }
+
+    public function esAmigo($usuarioId, $amigoId)
+    {
+        $usuario = self::findOne($usuarioId);
+        $amigo = self::findOne($amigoId);
+        return in_array($usuario, $amigo->amigos);
+    }
 }

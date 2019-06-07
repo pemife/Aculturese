@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $this yii\web\View */
 /* @var $model app\models\Usuarios */
 
-$this->title = $model->nombre;
+$this->title = "Perfil de " . $model->nombre;
 $this->params['breadcrumbs'][] = ['label' => 'Usuarios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -16,6 +16,7 @@ $puedeModificar = (Yii::$app->user->id === 1 || Yii::$app->user->id === $model->
 $enlaceMod = $puedeModificar ? Url::to(['usuarios/update', 'id' => $model->id]) : '#';
 $enlaceBor = $puedeModificar ? Url::to(['usuarios/delete', 'id' => $model->id]) : '#';
 $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model->id]) : '#';
+
 
 ?>
 <style>
@@ -27,6 +28,11 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
 
   .opciones{
     margin-top: 30px;
+  }
+
+  .titulo{
+    display: inline-flex;
+    justify-content: space-between;
   }
 
   .flex-container{
@@ -45,10 +51,22 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
 <div class="usuarios-view">
   <div class="nombreOpciones">
     <div class="titulo">
-      <h1><?= Html::encode($model->nombre) ?></h1>
-      <span>
-        <?= // TODO: Añadir/borrar amigo ?>
-      </span>
+      <h1>
+        <?= Html::encode($model->nombre) ?>
+      </h1>
+      <p>&nbsp;&nbsp;&nbsp;</p>
+      <div class="opciones">
+        <?php
+        if(!Yii::$app->user->isGuest && (Yii::$app->user->id !== $model->id)){
+
+          if($model->esAmigo(Yii::$app->user->id, $model->id)){
+            echo Html::button('', ['borrar-amigo', 'id' => $model->id, 'class' =>'glyphicon glyphicon-remove']);
+          } else {
+            echo Html::button('', ['anadir-amigo', 'id' => $model->id, 'class' => 'glyphicon glyphicon-plus']);
+          }
+        }
+        ?>
+      </div>
     </div>
     <div class="opciones">
       <span class="dropdown">
@@ -106,7 +124,7 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
         <?php foreach ($model->amigos as $amigo) { ?>
             <tr>
               <td id="usuario<?= $amigo->id ?>">
-                <?= Html::a($amigo->nombre, ['view', 'id' => $amigo->id]) ?>
+                <?= Html::a(Html::encode($amigo->nombre), ['view', 'id' => $amigo->id]) ?>
               </td>
             </tr>
         <?php } ?>
@@ -123,7 +141,7 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
         <div>
           <h2>
             <?= Html::a(
-              $evento->nombre,
+              Html::encode($evento->nombre),
               Url::to(['eventos/view', 'id' => $evento->id])
             )  ?>
           </h2>
@@ -133,7 +151,7 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
             Url::to(['eventos/view', 'id' => $evento->id])
           ) ?>
           <span>
-            <?= $evento->inicio ?><br>
+            <?= Html::encode($evento->inicio) ?><br>
             <span class="<?= $evento->es_privado ? 'glyphicon glyphicon-lock' : 'glyphicon glyphicon-globe' ?>"></span>
           </span>
 

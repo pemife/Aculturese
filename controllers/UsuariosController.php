@@ -81,7 +81,7 @@ class UsuariosController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $eventosUsuario = Eventos::findBySql('select e.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where u.id=' . $model->id)->all();
+        $eventosUsuario = Eventos::findBySql('select e.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where u.id=' . $model->id)->limit(20)->all();
         //$eventosUsuario = Eventos::find()->with('usuarios')->all();
 
         return $this->render('view', [

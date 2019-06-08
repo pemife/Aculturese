@@ -1,3 +1,7 @@
+<?php
+use yii\helpers\Html;
+?>
+
 <div id="tablaAmigos">
   <table class="table table-striped table bordered">
     <tr>

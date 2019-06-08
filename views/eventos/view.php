@@ -18,13 +18,18 @@ $url2 = Url::to(['lista-participantes', 'eventoId' => $model->id]);
 $userId = Yii::$app->user->isGuest ? null : Yii::$app->user->id;
 $userNombre = Yii::$app->user->isGuest ? null : Usuarios::findOne(Yii::$app->user->id)->nombre;
 
+$esAsistente = $model->esAsistente(Usuarios::findOne(Yii::$app->user->id));
+$esAsistenteJS = json_encode($esAsistente);
+
 $js = <<<EOF
 $('document').ready(function(){
   actualizarLista();
 });
 
+var esAsistente = $esAsistenteJS;
+
 $('#anadirParticipantes').click(function(e){
-  if(!$('#asistente$userId').text() == "$userNombre"){
+  if(!esAsistente){
     $.ajax({
       method: 'GET',
       url: '$url',
@@ -53,6 +58,9 @@ function actualizarLista(){
           } else {
               alert('Ha habido un error con la lista de asistentes(2)');
           }
+      },
+      error: function(){
+        alert("error en actualizar lista");
       }
     });
 }
@@ -66,7 +74,8 @@ $this->registerJs($js);
     justify-content: space-between;
   }
 
-  .flex-container > div {
+  #asistentes-ajax > div {
+    flex-grow: 1;
     width: 32%;
     padding: 10px;
   }
@@ -80,8 +89,8 @@ $this->registerJs($js);
     <h1><?= Html::encode($this->title) ?></h1>
 
       <p>
-        <?php if( !Yii::$app->user->isGuest ){ ?>
-          <?= Html::a('Unirse', '#', [
+        <?php if( !Yii::$app->user->isGuest && !$esAsistente ){ ?>
+          <?= Html::a('Unirse', '', [
             'class' => 'btn btn-success',
             'id' => 'anadirParticipantes',
             ]) ?>

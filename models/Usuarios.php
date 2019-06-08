@@ -211,4 +211,9 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         $amigo = self::findOne($amigoId);
         return in_array($usuario, $amigo->amigos);
     }
+
+    public function esAsistente($evento)
+    {
+        return in_array($evento, $this->eventos);
+    }
 }

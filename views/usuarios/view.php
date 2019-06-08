@@ -3,6 +3,7 @@
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\DetailView;
+use app\models\Usuarios;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Usuarios */
@@ -19,28 +20,42 @@ $enlacePass = $puedeModificar ? Url::to(['usuarios/cambio-pass', 'id' => $model-
 
 $url2 = Url::to(['lista-amigos', 'usuarioId' => $model->id]);
 
+// La lista de amigos solo son visibles para los amigos o para el propio usuario
+$esAmigo = $model->esAmigo(Usuarios::findOne(Yii::$app->user->id)->id, $model->id);
+$puedeVerAmigos = $esAmigo || (Yii::$app->user->id == $model->id);
+$puedeVerAmigosJS = json_encode($puedeVerAmigos);
+
 $js = <<<EOF
 $('document').ready(function(){
   actualizarLista();
 });
 
+var esAmigo = $puedeVerAmigosJS;
+
 $('#botonAmistad').click(function(e){
-  actualizarLista();
+  let mensaje = esAmigo ? "¿Estas seguro de borrar como amigo?" : "¿Estas seguro de añadir como amigo?";
+  if(confirm(mensaje)){
+    actualizarLista();
+  } else {
+    e.preventDefault();
+  }
 });
 
 function actualizarLista(){
-  $.ajax({
+  if(esAmigo){
+    $.ajax({
       method: 'GET',
       url: '$url2',
       data: {},
-      success: function(result){
+        success: function(result){
           if (result) {
-              $('#amigosAjax').html(result);
+            $('#amigosAjax').html(result);
           } else {
-              alert('Ha habido un error con la lista de asistentes(2)');
+            alert('Ha habido un error con la lista de asistentes(2)');
           }
-      }
-    });
+        }
+      });
+  }
 }
 
 EOF;
@@ -88,9 +103,9 @@ $this->registerJs($js);
         if(!Yii::$app->user->isGuest && (Yii::$app->user->id !== $model->id)){
 
           if($model->esAmigo(Yii::$app->user->id, $model->id)){
-            echo Html::a('', ['borrar-amigo', 'id' => $model->id], ['id' => "botonAmistad", 'class' =>'glyphicon glyphicon-remove']);
+            echo Html::a('', ['borrar-amigo', 'amigoId' => $model->id], ['id' => "botonAmistad", 'class' =>'glyphicon glyphicon-remove']);
           } else {
-            echo Html::a('', ['anadir-amigo', 'id' => $model->id], ['id' => "botonAmistad", 'class' => 'glyphicon glyphicon-plus']);
+            echo Html::a('', ['mandar-peticion', 'amigoId' => $model->id], ['id' => "botonAmistad", 'class' => 'glyphicon glyphicon-plus']);
           }
         }
         ?>
@@ -145,18 +160,7 @@ $this->registerJs($js);
         ]) ?>
     </div>
     <div id="amigosAjax">
-      <table class="table table-striped table bordered">
-        <tr>
-          <th>Amigos: (<?= count($model->amigos) ?>)</th>
-        </tr>
-        <?php foreach ($model->amigos as $amigo) { ?>
-            <tr>
-              <td id="usuario<?= $amigo->id ?>">
-                <?= Html::a(Html::encode($amigo->nombre), ['view', 'id' => $amigo->id]) ?>
-              </td>
-            </tr>
-        <?php } ?>
-      </table>
+
     </div>
   </div>
 

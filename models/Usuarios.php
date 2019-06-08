@@ -216,4 +216,34 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
     {
         return in_array($evento, $this->eventos);
     }
+
+    public function anadirAmigo($usuarioId, $amigoId)
+    {
+        if (!$this->esAmigo($usuarioId, $amigoId)) {
+            $sql = 'insert into amigos(usuario_id, amigo_id) values(' . $usuarioId . ', ' . $amigoId . '), (' . $amigoId . ', ' . $usuarioId . ')';
+            if (Yii::$app->db->createCommand($sql)->execute()) {
+                Yii::$app->session->setFlash('info', 'Te has añadido satisfactoriamente como amigo');
+                return true;
+            }
+            Yii::$app->session->setFlash('error', 'Ha habido un error al añadirte como amigo');
+            return false;
+        }
+        Yii::$app->session->setFlash('error', 'Ya sois amigos!');
+        return false;
+    }
+
+    public function borrarAmigo($usuarioId, $amigoId)
+    {
+        if ($this->esAmigo($usuarioId, $amigoId)) {
+            $sql = 'delete from amigos where (usuario_id = ' . $usuarioId . ' and amigo_id =' . $amigoId . ') or (amigo_id =' . $usuarioId . ' and usuario_id = ' . $amigoId . ')';
+            if (Yii::$app->db->createCommand($sql)->execute()) {
+                Yii::$app->session->setFlash('info', 'Te has borrado satisfactoriamente como amigo');
+                return true;
+            }
+            Yii::$app->session->setFlash('error', 'Ha habido un error al borrarte como amigo');
+            return false;
+        }
+        Yii::$app->session->setFlash('error', 'No sois amigos!');
+        return false;
+    }
 }

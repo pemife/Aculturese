@@ -41,6 +41,7 @@ AppAsset::register($this);
         'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => [
             ['label' => 'Eventos publicos', 'url' => ['/eventos/publicos']],
+            ['label' => 'Usuarios', 'url' => ['/usuarios/index']],
             ['label' => 'Perfil', 'url' => ['/usuarios/view', 'id' => Yii::$app->user->id], 'visible' => !Yii::$app->user->isGuest],
             ['label' => 'Calendarios (proximamente)', 'url' => ['/usuarios/calendario']],
             Yii::$app->user->isGuest ? (

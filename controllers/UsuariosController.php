@@ -246,8 +246,59 @@ class UsuariosController extends Controller
         ]);
     }
 
+    public function actionAnadirAmigo($amigoId)
+    {
+        var_dump(Yii::$app->request->post());
+        die();
+        if (Yii::$app->request->post('aceptar') === true) {
+            $model = Usuarios::findOne(Yii::$app->user->id);
+            $model->anadirAmigo(Yii::$app->user->id, $amigoId);
+        }
+
+        return $this->redirect(['view', 'id' => $amigoId]);
+    }
+
+    /*
+    Html::a($data['name'], ['suppliers_orders/addproduct', 'order' => $model->id, 'product' => $data['id']], [
+      'data' => [
+          'method' => 'POST',
+          'params' => ['dataProvider' => $dataProvider_products]
+      ]
+    ]);
+    */
+
+    public function actionMandarPeticion($amigoId)
+    {
+        Yii::$app->mailer->compose()
+        ->setFrom('aculturese@gmail.com')
+        ->setTo($this->findModel($amigoId)->email)
+        ->setSubject('Peticion de amistad de ' . $this->findModel(Yii::$app->user->id)->nombre)
+        ->setHtmlBody('Para aceptar la peticion, pulsa '
+        . Html::a('aqui', Url::to(['usuarios/anadir-amigo', 'amigoId' => $amigoId], true), [
+          'data' => [
+              'method' => 'POST',
+              'params' => ['aceptar' => 'hola'],
+          ],
+        ]))
+        ->send();
+        Yii::$app->session->setFlash('info', 'Se ha mandado la peticion de amistad');
+        return $this->redirect(['view', 'id' => $amigoId]);
+    }
+
+    public function actionBorrarAmigo($amigoId)
+    {
+        $model = Usuarios::findOne(Yii::$app->user->id);
+        $model->borrarAmigo(Yii::$app->user->id, $amigoId);
+        return $this->redirect(['view', 'id' => $amigoId]);
+    }
+
     public function tienePermisos($model)
     {
         return Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id;
+    }
+
+    public function esAmigo($usuario)
+    {
+        return in_array($usuario, $this->amigos);
     }
 }

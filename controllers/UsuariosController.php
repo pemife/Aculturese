@@ -276,7 +276,7 @@ class UsuariosController extends Controller
         ->setTo($this->findModel($amigoId)->email)
         ->setSubject('Peticion de amistad de ' . $this->findModel(Yii::$app->user->id)->nombre)
         ->setHtmlBody('Para aceptar la peticion, pulsa '
-        . Html::a('aqui', Url::to(['usuarios/anadir-amigo', 'amigoId' => $amigoId], true), [
+        . Html::a('aqui', ['usuarios/anadir-amigo', 'amigoId' => $amigoId], [
           'data' => [
             'method' => 'POST',
             'params' => [
@@ -299,10 +299,5 @@ class UsuariosController extends Controller
     public function tienePermisos($model)
     {
         return Yii::$app->user->id === 1 || Yii::$app->user->id === $model->id;
-    }
-
-    public function esAmigo($usuario)
-    {
-        return in_array($usuario, $this->amigos);
     }
 }

@@ -249,8 +249,10 @@ class UsuariosController extends Controller
     public function actionAnadirAmigo($amigoId)
     {
         var_dump(Yii::$app->request->post());
+        echo '<br>';
+        var_dump(Yii::$app->request->get());
         die();
-        if (Yii::$app->request->post('aceptar') === true) {
+        if (Yii::$app->request->post('token') === $this->findModel(Yii::$app->user->id)->token) {
             $model = Usuarios::findOne(Yii::$app->user->id);
             $model->anadirAmigo(Yii::$app->user->id, $amigoId);
         }
@@ -276,10 +278,12 @@ class UsuariosController extends Controller
         ->setHtmlBody('Para aceptar la peticion, pulsa '
         . Html::a('aqui', Url::to(['usuarios/anadir-amigo', 'amigoId' => $amigoId], true), [
           'data' => [
-              'method' => 'POST',
-              'params' => ['aceptar' => 'hola'],
+            'method' => 'POST',
+            'params' => [
+              'token' => $this->findModel(Yii::$app->user->id)->token,
+            ],
           ],
-        ]))
+        ]) . '.')
         ->send();
         Yii::$app->session->setFlash('info', 'Se ha mandado la peticion de amistad');
         return $this->redirect(['view', 'id' => $amigoId]);

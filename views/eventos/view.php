@@ -14,8 +14,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
 $url = Url::to(['anadir-participante', 'eventoId' => $model->id]);
 $url2 = Url::to(['lista-participantes', 'eventoId' => $model->id]);
-$userId = $usuarioLogeado->id;
-$userNombre = $usuarioLogeado->nombre;
+$userId = Yii::$app->user->isGuest ? null : $usuarioLogeado->id;
+$userNombre = Yii::$app->user->isGuest ? null : $usuarioLogeado->nombre;
 
 $js = <<<EOF
 $('document').ready(function(){

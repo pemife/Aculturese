@@ -88,7 +88,6 @@ class EventosController extends Controller
             return $this->render('view', [
               'model' => $model,
               'listaAsistentes' => $this->listaAsistentes($model->id),
-              'usuarioLogeado' => Usuarios::findOne(Yii::$app->user->id),
             ]);
         }
         Yii::$app->session->setFlash('error', 'No tienes acceso a ese evento');

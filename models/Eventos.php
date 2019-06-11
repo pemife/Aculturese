@@ -130,4 +130,9 @@ class Eventos extends \yii\db\ActiveRecord
     {
         return file_exists(Yii::getAlias('@uploads/' . $this->id . '.jpg'));
     }
+
+    public function esAsistente($usuario)
+    {
+        return in_array($usuario, $this->usuarios);
+    }
 }

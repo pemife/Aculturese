@@ -5,6 +5,7 @@ use app\models\Usuarios;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
+use app\models\Usuarios;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Eventos */
@@ -99,6 +100,9 @@ function actualizarLista(){
           } else {
               alert('Ha habido un error con la lista de asistentes(2)');
           }
+      },
+      error: function(){
+        alert("error en actualizar lista");
       }
     });
 }
@@ -112,7 +116,8 @@ $this->registerJs($js);
     justify-content: space-between;
   }
 
-  .flex-container > div {
+  #asistentes-ajax > div {
+    flex-grow: 1;
     width: 32%;
     padding: 10px;
   }

@@ -81,7 +81,7 @@ class UsuariosController extends Controller
     public function actionView($id)
     {
         $model = $this->findModel($id);
-        $eventosUsuario = Eventos::findBySql('select e.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where u.id=' . $model->id)->all();
+        $eventosUsuario = Eventos::findBySql('select e.* from eventos e join usuarios_eventos ue on e.id=ue.evento_id join usuarios u on ue.usuario_id=u.id where u.id=' . $model->id)->limit(20)->all();
         //$eventosUsuario = Eventos::find()->with('usuarios')->all();
 
         return $this->render('view', [
@@ -132,7 +132,7 @@ class UsuariosController extends Controller
             }
 
             $model->password = '';
-          
+
             return $this->render('update', [
               'model' => $model,
             ]);
@@ -237,6 +237,63 @@ class UsuariosController extends Controller
         return $this->render('escribeMail', [
           'email' => $email,
         ]);
+    }
+
+    public function actionListaAmigos($usuarioId)
+    {
+        return $this->renderAjax('vistaAmigos', [
+          'listaAmigos' => $this->findModel($usuarioId)->amigos,
+        ]);
+    }
+
+    public function actionAnadirAmigo($amigoId)
+    {
+        var_dump(Yii::$app->request->post());
+        echo '<br>';
+        var_dump(Yii::$app->request->get());
+        die();
+        if (Yii::$app->request->post('token') === $this->findModel(Yii::$app->user->id)->token) {
+            $model = Usuarios::findOne(Yii::$app->user->id);
+            $model->anadirAmigo(Yii::$app->user->id, $amigoId);
+        }
+
+        return $this->redirect(['view', 'id' => $amigoId]);
+    }
+
+    /*
+    Html::a($data['name'], ['suppliers_orders/addproduct', 'order' => $model->id, 'product' => $data['id']], [
+      'data' => [
+          'method' => 'POST',
+          'params' => ['dataProvider' => $dataProvider_products]
+      ]
+    ]);
+    */
+
+    public function actionMandarPeticion($amigoId)
+    {
+        Yii::$app->mailer->compose()
+        ->setFrom('aculturese@gmail.com')
+        ->setTo($this->findModel($amigoId)->email)
+        ->setSubject('Peticion de amistad de ' . $this->findModel(Yii::$app->user->id)->nombre)
+        ->setHtmlBody('Para aceptar la peticion, pulsa '
+        . Html::a('aqui', ['usuarios/anadir-amigo', 'amigoId' => $amigoId], [
+          'data' => [
+            'method' => 'POST',
+            'params' => [
+              'token' => $this->findModel(Yii::$app->user->id)->token,
+            ],
+          ],
+        ]) . '.')
+        ->send();
+        Yii::$app->session->setFlash('info', 'Se ha mandado la peticion de amistad');
+        return $this->redirect(['view', 'id' => $amigoId]);
+    }
+
+    public function actionBorrarAmigo($amigoId)
+    {
+        $model = Usuarios::findOne(Yii::$app->user->id);
+        $model->borrarAmigo(Yii::$app->user->id, $amigoId);
+        return $this->redirect(['view', 'id' => $amigoId]);
     }
 
     public function tienePermisos($model)

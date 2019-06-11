@@ -5,7 +5,6 @@ use app\models\Usuarios;
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
-use app\models\Usuarios;
 
 /* @var $this yii\web\View */
 /* @var $model app\models\Eventos */
@@ -18,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
 $anadirParticipanteUrl = Url::to(['anadir-participante', 'eventoId' => $model->id]);
 $borrarParticipanteUrl = Url::to(['borrar-participante', 'eventoId' => $model->id]);
 $url2 = Url::to(['lista-participantes', 'eventoId' => $model->id]);
-$userId = Yii::$app->user->isGuest ? null : $usuarioLogeado->id;
+$userId = Yii::$app->user->isGuest ? null : Yii::$app->user->id;
 // $userNombre = Yii::$app->user->isGuest ? null : $usuarioLogeado->nombre;
 $botonBorrarse = Html::a('Borrarse', '#', [
   'class' => 'btn btn-danger',

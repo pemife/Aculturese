@@ -246,15 +246,13 @@ class UsuariosController extends Controller
         ]);
     }
 
-    public function actionAnadirAmigo($amigoId)
+    public function actionAnadirAmigo($amigoId, $usuarioId)
     {
-        var_dump(Yii::$app->request->post());
-        echo '<br>';
-        var_dump(Yii::$app->request->get());
-        die();
-        if (Yii::$app->request->post('token') === $this->findModel(Yii::$app->user->id)->token) {
+        if (Yii::$app->user->id == $amigoId) {
             $model = Usuarios::findOne(Yii::$app->user->id);
-            $model->anadirAmigo(Yii::$app->user->id, $amigoId);
+            $model->anadirAmigo(Yii::$app->user->id, $usuarioId);
+        } else {
+            Yii::$app->session->setFlash('error', 'Peticion erronea!');
         }
 
         return $this->redirect(['view', 'id' => $amigoId]);
@@ -276,7 +274,7 @@ class UsuariosController extends Controller
         ->setTo($this->findModel($amigoId)->email)
         ->setSubject('Peticion de amistad de ' . $this->findModel(Yii::$app->user->id)->nombre)
         ->setHtmlBody('Para aceptar la peticion, pulsa '
-        . Html::a('aqui', ['usuarios/anadir-amigo', 'amigoId' => $amigoId], [
+        . Html::a('aqui', Url::to(['usuarios/anadir-amigo', 'amigoId' => $amigoId, 'usuarioId' => Yii::$app->user->id], true), [
           'data' => [
             'method' => 'POST',
             'params' => [

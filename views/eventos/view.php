@@ -1,5 +1,7 @@
 <?php
 
+use app\models\Usuarios;
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -12,25 +14,49 @@ $this->params['breadcrumbs'][] = ['label' => 'Eventos', 'url' => ['publicos']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
-$url = Url::to(['anadir-participante', 'eventoId' => $model->id]);
+$anadirParticipanteUrl = Url::to(['anadir-participante', 'eventoId' => $model->id]);
+$borrarParticipanteUrl = Url::to(['borrar-participante', 'eventoId' => $model->id]);
 $url2 = Url::to(['lista-participantes', 'eventoId' => $model->id]);
 $userId = Yii::$app->user->isGuest ? null : $usuarioLogeado->id;
-$userNombre = Yii::$app->user->isGuest ? null : $usuarioLogeado->nombre;
+// $userNombre = Yii::$app->user->isGuest ? null : $usuarioLogeado->nombre;
+$botonBorrarse = Html::a('Borrarse', '#', [
+  'class' => 'btn btn-danger',
+  'id' => 'borrarParticipantes',
+  'style' => 'display: none;',
+]);
+$botonAnadirse = Html::a('Unirse', '#', [
+  'class' => 'btn btn-success',
+  'id' => 'anadirParticipantes',
+  'style' => 'display: none;',
+]);
+
+$boolAsistente = Usuarios::findOne(Yii::$app->user->id)->esAsistente(Yii::$app->user->id, $model->id);
+$boolAsistenteJS = json_encode($boolAsistente);
 
 $js = <<<EOF
 $('document').ready(function(){
   actualizarLista();
 });
 
+if ($boolAsistenteJS) {
+  $("#borrarParticipantes").show();
+  $("#anadirParticipantes").hide();
+} else {
+  $("#borrarParticipantes").hide();
+  $("#anadirParticipantes").show();
+}
+
 $('#anadirParticipantes').click(function(e){
-  if(!$('#asistente$userId').text() == "$userNombre"){
+  if(!$('#asistente$userId').length){
     $.ajax({
       method: 'GET',
-      url: '$url',
+      url: '$anadirParticipanteUrl',
       data: {},
         success: function(result){
           if (result) {
             $('#asistentesAjax').html(result);
+            $("#borrarParticipantes").show();
+            $("#anadirParticipantes").hide();
           } else {
             alert('Ha habido un error con la lista de asistentes');
           }
@@ -38,6 +64,27 @@ $('#anadirParticipantes').click(function(e){
       });
   } else {
     alert("Ya eres un asistente de este evento!");
+  }
+});
+
+$('#borrarParticipantes').click(function(e){
+  if($('#asistente$userId').length){
+    $.ajax({
+      method: 'GET',
+      url: '$borrarParticipanteUrl',
+      data: {},
+        success: function(result){
+          if (result) {
+            $('#asistentesAjax').html(result);
+            $("#borrarParticipantes").hide();
+            $("#anadirParticipantes").show();
+          } else {
+            alert('Ha habido un error con la lista de asistentes');
+          }
+        }
+      });
+  } else {
+    alert("No eres un asistente de este evento");
   }
 });
 
@@ -80,10 +127,10 @@ $this->registerJs($js);
 
       <p>
         <?php if( !Yii::$app->user->isGuest ){ ?>
-          <?= Html::a('Unirse', '#', [
-            'class' => 'btn btn-success',
-            'id' => 'anadirParticipantes',
-            ]) ?>
+          <span id="spanBoton">
+            <?= $botonBorrarse ?>
+            <?= $botonAnadirse ?>
+          </span>
         <?php } ?>
         <?php if( Yii::$app->user->id === 1 || Yii::$app->user->id === $model->creador_id ){ ?>
           <?= Html::a('Actualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>

@@ -1,5 +1,7 @@
 <?php
 
+use app\models\Usuarios;
+
 use yii\helpers\Url;
 use yii\helpers\Html;
 use yii\widgets\DetailView;
@@ -13,30 +15,49 @@ $this->params['breadcrumbs'][] = ['label' => 'Eventos', 'url' => ['publicos']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 
-$url = Url::to(['anadir-participante', 'eventoId' => $model->id]);
+$anadirParticipanteUrl = Url::to(['anadir-participante', 'eventoId' => $model->id]);
+$borrarParticipanteUrl = Url::to(['borrar-participante', 'eventoId' => $model->id]);
 $url2 = Url::to(['lista-participantes', 'eventoId' => $model->id]);
-$userId = Yii::$app->user->isGuest ? null : Yii::$app->user->id;
-$userNombre = Yii::$app->user->isGuest ? null : Usuarios::findOne(Yii::$app->user->id)->nombre;
+$userId = Yii::$app->user->isGuest ? null : $usuarioLogeado->id;
+// $userNombre = Yii::$app->user->isGuest ? null : $usuarioLogeado->nombre;
+$botonBorrarse = Html::a('Borrarse', '#', [
+  'class' => 'btn btn-danger',
+  'id' => 'borrarParticipantes',
+  'style' => 'display: none;',
+]);
+$botonAnadirse = Html::a('Unirse', '#', [
+  'class' => 'btn btn-success',
+  'id' => 'anadirParticipantes',
+  'style' => 'display: none;',
+]);
 
-$esAsistente = $model->esAsistente(Usuarios::findOne(Yii::$app->user->id));
-$esAsistenteJS = json_encode($esAsistente);
+$boolAsistente = Usuarios::findOne(Yii::$app->user->id)->esAsistente(Yii::$app->user->id, $model->id);
+$boolAsistenteJS = json_encode($boolAsistente);
 
 $js = <<<EOF
 $('document').ready(function(){
   actualizarLista();
 });
 
-var esAsistente = $esAsistenteJS;
+if ($boolAsistenteJS) {
+  $("#borrarParticipantes").show();
+  $("#anadirParticipantes").hide();
+} else {
+  $("#borrarParticipantes").hide();
+  $("#anadirParticipantes").show();
+}
 
 $('#anadirParticipantes').click(function(e){
-  if(!esAsistente){
+  if(!$('#asistente$userId').length){
     $.ajax({
       method: 'GET',
-      url: '$url',
+      url: '$anadirParticipanteUrl',
       data: {},
         success: function(result){
           if (result) {
             $('#asistentesAjax').html(result);
+            $("#borrarParticipantes").show();
+            $("#anadirParticipantes").hide();
           } else {
             alert('Ha habido un error con la lista de asistentes');
           }
@@ -44,6 +65,27 @@ $('#anadirParticipantes').click(function(e){
       });
   } else {
     alert("Ya eres un asistente de este evento!");
+  }
+});
+
+$('#borrarParticipantes').click(function(e){
+  if($('#asistente$userId').length){
+    $.ajax({
+      method: 'GET',
+      url: '$borrarParticipanteUrl',
+      data: {},
+        success: function(result){
+          if (result) {
+            $('#asistentesAjax').html(result);
+            $("#borrarParticipantes").hide();
+            $("#anadirParticipantes").show();
+          } else {
+            alert('Ha habido un error con la lista de asistentes');
+          }
+        }
+      });
+  } else {
+    alert("No eres un asistente de este evento");
   }
 });
 
@@ -86,18 +128,18 @@ $this->registerJs($js);
 </style>
 <div class="eventos-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= Html::encode($this->title) ?>   <span class="<?= $model->es_privado ? "glyphicon glyphicon-lock" : "glyphicon glyphicon-globe" ?>"></span></h1>
 
       <p>
-        <?php if( !Yii::$app->user->isGuest && !$esAsistente ){ ?>
-          <?= Html::a('Unirse', '', [
-            'class' => 'btn btn-success',
-            'id' => 'anadirParticipantes',
-            ]) ?>
+        <?php if( !Yii::$app->user->isGuest ){ ?>
+          <span id="spanBoton">
+            <?= $botonBorrarse ?>
+            <?= $botonAnadirse ?>
+          </span>
         <?php } ?>
         <?php if( Yii::$app->user->id === 1 || Yii::$app->user->id === $model->creador_id ){ ?>
           <?= Html::a('Actualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-          <?= Html::a('Borrar', ['delete', 'id' => $model->id], [
+          <?= Html::a('Borrar Evento', ['delete', 'id' => $model->id], [
               'class' => 'btn btn-danger',
               'data' => [
                   'confirm' => '¿Seguro que quieres borrar este evento?',
@@ -109,7 +151,7 @@ $this->registerJs($js);
 
     <div class="flex-container">
       <div>
-        <?= DetailView::widget([
+        <!-- <?= DetailView::widget([
           'model' => $model,
           'attributes' => [
             'id',
@@ -131,6 +173,10 @@ $this->registerJs($js);
             ],
             'es_privado:boolean',
           ],
+          ]) ?> -->
+
+        <?= Yii::$app->controller->renderPartial('detalleEvento', [
+          'evento' => $model,
           ]) ?>
       </div>
       <div id="asistentesAjax">

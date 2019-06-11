@@ -195,7 +195,6 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         if (!Yii::$app->user->isGuest) {
             $sql = 'insert into usuarios_eventos(usuario_id, evento_id) values(' . $usuarioId . ', ' . $eventoId . ')';
             if (Yii::$app->db->createCommand($sql)->execute()) {
-                Yii::$app->session->setFlash('info', 'Te has añadido satisfactoriamente como asistente');
                 return true;
             }
             Yii::$app->session->setFlash('error', 'Ha habido un error al unirte');
@@ -210,11 +209,6 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         $usuario = self::findOne($usuarioId);
         $amigo = self::findOne($amigoId);
         return in_array($usuario, $amigo->amigos);
-    }
-
-    public function esAsistente($evento)
-    {
-        return in_array($evento, $this->eventos);
     }
 
     public function anadirAmigo($usuarioId, $amigoId)
@@ -245,5 +239,36 @@ class Usuarios extends \yii\db\ActiveRecord implements IdentityInterface
         }
         Yii::$app->session->setFlash('error', 'No sois amigos!');
         return false;
+    }
+  
+    public function borrarme($usuarioId, $eventoId)
+    {
+        if (!Yii::$app->user->isGuest) {
+            $sql = 'delete from usuarios_eventos where (usuario_id=' . $usuarioId . ') and (evento_id=' . $eventoId . ')';
+            if (Yii::$app->db->createCommand($sql)->execute()) {
+                return true;
+            }
+            Yii::$app->session->setFlash('error', 'Ha habido un error al borrarte');
+            return false;
+        }
+        Yii::$app->session->setFlash('error', 'Debes estar logeado para marcarte como asistente');
+        return false;
+    }
+
+    public function esAsistente($usuarioId, $eventoId)
+    {
+        // return in_array(Eventos::find($eventoId)->one(), $this->findModel($usuarioId)->eventos);
+
+        foreach ($this::findModel($usuarioId)->eventos as $evento) {
+            if ($evento->getAttributes() === Eventos::findOne($eventoId)->getAttributes()) {
+                return  true;
+            }
+        }
+        return false;
+    }
+
+    public function findModel($id)
+    {
+        return $this->findOne($id);
     }
 }

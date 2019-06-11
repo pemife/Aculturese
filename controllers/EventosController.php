@@ -181,6 +181,17 @@ class EventosController extends Controller
         ]);
     }
 
+    public function actionBorrarParticipante($eventoId)
+    {
+        if ($this->esAsistente($eventoId)) {
+            $usuario = Usuarios::findOne(Yii::$app->user->id);
+            $usuario->borrarme($usuario->id, $eventoId);
+        }
+        return $this->renderAjax('vistaAsistentes', [
+          'listaAsistentes' => $this->listaAsistentes($eventoId),
+        ]);
+    }
+
     public function actionListaParticipantes($eventoId)
     {
         return $this->renderAjax('vistaAsistentes', [

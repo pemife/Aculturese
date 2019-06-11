@@ -123,7 +123,7 @@ $this->registerJs($js);
 </style>
 <div class="eventos-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1><?= Html::encode($this->title) ?>   <span class="<?= $model->es_privado ? "glyphicon glyphicon-lock" : "glyphicon glyphicon-globe" ?>"></span></h1>
 
       <p>
         <?php if( !Yii::$app->user->isGuest ){ ?>
@@ -134,7 +134,7 @@ $this->registerJs($js);
         <?php } ?>
         <?php if( Yii::$app->user->id === 1 || Yii::$app->user->id === $model->creador_id ){ ?>
           <?= Html::a('Actualizar', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
-          <?= Html::a('Borrar', ['delete', 'id' => $model->id], [
+          <?= Html::a('Borrar Evento', ['delete', 'id' => $model->id], [
               'class' => 'btn btn-danger',
               'data' => [
                   'confirm' => '¿Seguro que quieres borrar este evento?',
@@ -146,7 +146,7 @@ $this->registerJs($js);
 
     <div class="flex-container">
       <div>
-        <?= DetailView::widget([
+        <!-- <?= DetailView::widget([
           'model' => $model,
           'attributes' => [
             'id',
@@ -168,6 +168,10 @@ $this->registerJs($js);
             ],
             'es_privado:boolean',
           ],
+          ]) ?> -->
+
+        <?= Yii::$app->controller->renderPartial('detalleEvento', [
+          'evento' => $model,
           ]) ?>
       </div>
       <div id="asistentesAjax">

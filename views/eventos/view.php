@@ -29,8 +29,13 @@ $botonAnadirse = Html::a('Unirse', '#', [
   'id' => 'anadirParticipantes',
   'style' => 'display: none;',
 ]);
+$botonInvitar = Html::a('Invitar', '#', [
+  'class' => 'btn btn-info',
+  'id' => 'invitarParticipantes',
+  'style' => 'display: none;',
+]);
 
-$boolAsistente = Usuarios::findOne(Yii::$app->user->id)->esAsistente(Yii::$app->user->id, $model->id);
+Yii::$app->user->isGuest ? $boolAsistente = false : $boolAsistente = Usuarios::findOne(Yii::$app->user->id)->esAsistente(Yii::$app->user->id, $model->id);
 $boolAsistenteJS = json_encode($boolAsistente);
 
 $js = <<<EOF
@@ -41,9 +46,11 @@ $('document').ready(function(){
 if ($boolAsistenteJS) {
   $("#borrarParticipantes").show();
   $("#anadirParticipantes").hide();
+  $("#invitarParticipantes").show();
 } else {
   $("#borrarParticipantes").hide();
   $("#anadirParticipantes").show();
+  $("#invitarParticipantes").hide();
 }
 
 $('#anadirParticipantes').click(function(e){
@@ -134,6 +141,7 @@ $this->registerJs($js);
           <span id="spanBoton">
             <?= $botonBorrarse ?>
             <?= $botonAnadirse ?>
+            <?= $botonInvitar ?>
           </span>
         <?php } ?>
         <?php if( Yii::$app->user->id === 1 || Yii::$app->user->id === $model->creador_id ){ ?>
